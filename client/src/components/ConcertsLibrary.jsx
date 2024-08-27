@@ -7,6 +7,14 @@ function ConcertsTable(props) {
   const { concerts } = props;
   const [expandedConcertID, setexpandedConcertID] = useState(null);
 
+
+  /*
+    When the user clicks the button, the handleToggleSeats function is called.
+    It receives the concertID of the clicked concert. If the concertID matches
+    the currently expandedConcertID, it means the map is already shown, so it 
+    collapses the map by setting expandedConcertID to null. If it doesn’t match,
+    it updates expandedConcertID to the clicked concertID to show the map.
+*/
   const handleToggleSeats = (concertID) => {
     setexpandedConcertID(prevId => prevId === concertID ? null : concertID);
   };
@@ -24,7 +32,14 @@ function ConcertsTable(props) {
                   <ConcertRow 
                       concertData={concert} 
                       key={concert.id}
-                      isExpanded={expandedConcertID === concert.id}
+                      isExpanded={expandedConcertID === concert.id} 
+                      /*
+                        If the expandedConcertID is equal to the concert.id, it 
+                        means that isExpanded is TRUE, it means that the 2D map
+                        is shown below.
+                        If the expandedConcertID is NULL, it means that isExpanded
+                        is FALSE, so the 2d map is not shown.
+                      */
                       onToggleSeats={handleToggleSeats}
                       loggedIn={props.loggedIn} />
               ))}
@@ -39,14 +54,28 @@ function ConcertRow(props) {
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
       if(loggedIn){
         onToggleSeats(concertData.id);
+        // Selects which row (controlled by the concert.id) needs to be expanded
       }
   };
+  
+  /*
+    The row displays:
+    - The concert name
+    - The theater name
+    - A button to book seats.
+    
+    If the user is logged in, clicking the button toggles the visibility of the 2D seat map.
+    If the user is not logged in, clicking the button redirects to the login page.
+    
+    The map visibility is controlled by the isExpanded state, which determines if the map
+    is shown underneath the row.
+  */
 
   return (
       <>
           <tr>
               <td>
-                  <p>{concertData.name}</p>
+                  <p>{concertData.name}</p> 
               </td>
               <td>
                   <p>{concertData.theater_name}</p>
