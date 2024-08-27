@@ -58,7 +58,7 @@ function TableLayout(props) {
         <h1 className='my-2'>List of Concerts and corresponding theater</h1>
       </div>
       <ConcertsTable 
-        concerts={props.concertList}  />
+        concerts={props.concertList} loggedIn={props.loggedIn} />
     </>
   );
 }

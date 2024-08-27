@@ -25,7 +25,8 @@ function ConcertsTable(props) {
                       concertData={concert} 
                       key={concert.id}
                       isExpanded={expandedConcertID === concert.id}
-                      onToggleSeats={handleToggleSeats} />
+                      onToggleSeats={handleToggleSeats}
+                      loggedIn={props.loggedIn} />
               ))}
           </tbody>
       </Table>
@@ -33,10 +34,12 @@ function ConcertsTable(props) {
 }
 
 function ConcertRow(props) {
-  const { concertData, isExpanded, onToggleSeats } = props;
+  const { concertData, isExpanded, onToggleSeats, loggedIn } = props;
 
-  const toggleSeats = () => {
-      onToggleSeats(concertData.id);
+  const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
+      if(loggedIn){
+        onToggleSeats(concertData.id);
+      }
   };
 
   return (
@@ -49,9 +52,15 @@ function ConcertRow(props) {
                   <p>{concertData.theater_name}</p>
               </td>
               <td className="text-center">
-                  <Button variant="primary" onClick={toggleSeats}>
-                      {isExpanded ? 'Hide seats ▲' : 'Book a seat ▼'}
-                  </Button>
+                {loggedIn ? (
+                    <Button variant="primary" onClick={toggleSeats}>
+                        {isExpanded ? 'Hide seats ▲' : 'Book a seat'}
+                    </Button>
+                ) : (
+                    <Link to="/login">
+                        <Button variant="primary">Book a seat</Button>
+                    </Link>
+                )}
               </td>
           </tr>
           {isExpanded && (

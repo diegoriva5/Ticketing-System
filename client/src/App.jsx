@@ -50,10 +50,6 @@ function AppWithRouter(props) {
     setTimeout( ()=> setDirty(true), 2000);
   }
 
-  const handleConcertClick = (theaterId) => {
-    setTheater(theaterId);
-  };
-
   useEffect(()=> {
     const checkAuth = async() => {
       try {
@@ -88,7 +84,7 @@ function AppWithRouter(props) {
     setLoggedIn(false);
     // clean up everything
     setUser(null);
-    setConcertList([]);
+    navigate("/");
   };
 
   return (
@@ -98,7 +94,8 @@ function AppWithRouter(props) {
                                   theater={theater} setTheater={setTheater}
                                   loggedIn={loggedIn} user={user} logout={handleLogout} />}>
           <Route index element={<TableLayout 
-              concertList={concertList} setConcertList={setConcertList} />} />
+              concertList={concertList} setConcertList={setConcertList}
+              loggedIn={loggedIn} />} />
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>
