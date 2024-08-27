@@ -25,7 +25,7 @@ function AppWithRouter(props) {
   const [loggedIn, setLoggedIn] = useState(false);
   // This state contains the user's info.
   const [user, setUser] = useState(null);
-
+  const [concertList, setConcertList] = useState([]);
 
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
@@ -83,7 +83,7 @@ function AppWithRouter(props) {
     setLoggedIn(false);
     // clean up everything
     setUser(null);
-    setFilmList([]);
+    setConcertList([]);
   };
 
   return (
@@ -91,6 +91,8 @@ function AppWithRouter(props) {
       <Route path="/" element={<GenericLayout 
                                   message={message} setMessage={setMessage}
                                   loggedIn={loggedIn} user={user} logout={handleLogout} />}>
+          <Route index element={<TableLayout 
+              concertList={concertList} setConcertList={setConcertList} />} />
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>

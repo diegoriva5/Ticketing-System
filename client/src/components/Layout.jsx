@@ -1,11 +1,12 @@
 import { Row, Col, Button, Alert, Toast } from 'react-bootstrap';
 import { Outlet, Link, useParams, Navigate, useLocation } from 'react-router-dom';
 
-import { Navigation } from './Navigation';
 import { useEffect } from 'react';
+import { Navigation } from './Navigation';
 import { LoginForm } from './Auth';
+import { ConcertsTable } from './ConcertsLibrary';
 
-//import API from '../API.js';
+import API from '../API.js';
 
 
 
@@ -40,9 +41,9 @@ function TableLayout(props) {
 
   useEffect(() => {
     if (reloadFromServer) {
-      API.getCoursesList(props.courseList)
-      .then(courses => {
-        props.setCourseList(courses);
+      API.getConcerts(props.concertList)
+      .then(concerts => {
+        props.setConcertList(concerts);
       })
       .catch(e => 
         { console.log(e); 
@@ -54,10 +55,10 @@ function TableLayout(props) {
   return (      // mt-5 lo mette più in basso
     <>
       <div className="flex-row justify-content-between mt-5">
-        <h1 className='my-2'>University Courses</h1>
+        <h1 className='my-2'>List of Concerts and corresponding theater</h1>
       </div>
-      <CoursesTable 
-        courses={props.courseList}  />
+      <ConcertsTable 
+        concerts={props.concertList}  />
     </>
   );
 }

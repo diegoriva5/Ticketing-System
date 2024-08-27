@@ -71,9 +71,9 @@ END;
 
 # Inserimento dei dati nella tabella theaters
 theaters_data = [
-    ('Theatre 1', 'Small', 4, 8),
-    ('Theatre 2', 'Medium', 6, 10),
-    ('Theatre 3', 'Large', 9, 14)
+    ('Theater 1', 'Small', 4, 8),
+    ('Theater 2', 'Medium', 6, 10),
+    ('Theater 3', 'Large', 9, 14)
 ]
 cursor.executemany('''
 INSERT INTO theaters (name, size, rows, columns)

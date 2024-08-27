@@ -37,11 +37,13 @@ const getConcerts = async () => {
   return getJson(
     fetch(SERVER_URL + 'list-concerts')
   ).then( json => {
-    return json.map((ticket) => {
-      const concert = {
-        name: concert.name
+    return json.map((concert) => {
+      const concertLine = {
+        id: concert.id,
+        name: concert.name,
+        theater_name: concert.theater_name
       }
-      return concert;
+      return concertLine;
     })
   })
 }
@@ -88,6 +90,6 @@ const logOut = async() => {
 }
 
   
-const API = { getTickets, addTicket, logIn, getUserInfo, logOut };
+const API = { getConcerts, logIn, getUserInfo, logOut };
 
 export default API;
