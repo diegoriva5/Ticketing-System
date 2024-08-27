@@ -33,6 +33,8 @@ function getJson(httpResponsePromise) {
   });
 }
 
+/* API to get all the concerts */
+
 const getConcerts = async () => {
   return getJson(
     fetch(SERVER_URL + 'list-concerts')
@@ -41,12 +43,16 @@ const getConcerts = async () => {
       const concertLine = {
         id: concert.id,
         name: concert.name,
+        theater_id: concert.theater_id,
         theater_name: concert.theater_name
       }
       return concertLine;
     })
   })
 }
+
+/* API to get a specific theater, given its ID */
+
 
 /*** Authentication functions ***/
 

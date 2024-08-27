@@ -26,6 +26,7 @@ function AppWithRouter(props) {
   // This state contains the user's info.
   const [user, setUser] = useState(null);
   const [concertList, setConcertList] = useState([]);
+  const [theater, setTheater] = useState(null);
 
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
@@ -48,6 +49,10 @@ function AppWithRouter(props) {
 
     setTimeout( ()=> setDirty(true), 2000);
   }
+
+  const handleConcertClick = (theaterId) => {
+    setTheater(theaterId);
+  };
 
   useEffect(()=> {
     const checkAuth = async() => {
@@ -90,6 +95,7 @@ function AppWithRouter(props) {
     <Routes>
       <Route path="/" element={<GenericLayout 
                                   message={message} setMessage={setMessage}
+                                  theater={theater} setTheater={setTheater}
                                   loggedIn={loggedIn} user={user} logout={handleLogout} />}>
           <Route index element={<TableLayout 
               concertList={concertList} setConcertList={setConcertList} />} />
