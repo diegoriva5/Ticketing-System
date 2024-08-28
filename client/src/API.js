@@ -53,6 +53,23 @@ const getConcerts = async () => {
 
 /* API to get a specific theater, given its ID */
 
+const getTheaterInfo = async (id) => {
+  return getJson(
+    fetch(SERVER_URL + 'get-theater-info/:id')
+  ).then( json => {
+      const theater = {
+        id: theater.id,
+        name: theater.name,
+        size: theater.size,
+        rows: theater.rows,
+        columns: theater.columns,
+        seats: theater.seats
+      }
+      return theater;
+    })
+}
+
+
 
 /*** Authentication functions ***/
 
@@ -96,6 +113,6 @@ const logOut = async() => {
 }
 
   
-const API = { getConcerts, logIn, getUserInfo, logOut };
+const API = { getConcerts, getTheaterInfo, logIn, getUserInfo, logOut };
 
 export default API;

@@ -27,6 +27,7 @@ function AppWithRouter(props) {
   const [user, setUser] = useState(null);
   const [concertList, setConcertList] = useState([]);
   const [theater, setTheater] = useState(null);
+  const [expandedConcertID, setExpandedConcertID] = useState(null);
 
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
@@ -84,7 +85,19 @@ function AppWithRouter(props) {
     setLoggedIn(false);
     // clean up everything
     setUser(null);
+    setExpandedConcertID(null);
     navigate("/");
+  };
+
+  /*
+    When the user clicks the button, the handleToggleSeats function is called.
+    It receives the concertID of the clicked concert. If the concertID matches
+    the currently expandedConcertID, it means the map is already shown, so it 
+    collapses the map by setting expandedConcertID to null. If it doesn’t match,
+    it updates expandedConcertID to the clicked concertID to show the map.
+  */
+  const handleToggleSeats = (concertID) => {
+    setExpandedConcertID(prevId => prevId === concertID ? null : concertID);
   };
 
   return (
@@ -95,7 +108,9 @@ function AppWithRouter(props) {
                                   loggedIn={loggedIn} user={user} logout={handleLogout} />}>
           <Route index element={<TableLayout 
               concertList={concertList} setConcertList={setConcertList}
-              loggedIn={loggedIn} />} />
+              loggedIn={loggedIn}
+              expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
+              handleToggleSeats={handleToggleSeats} />} />
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>

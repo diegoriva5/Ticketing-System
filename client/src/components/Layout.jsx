@@ -51,6 +51,19 @@ function TableLayout(props) {
       }); 
     }
   }, [reloadFromServer]);
+
+  useEffect(() => {
+    if (reloadFromServer) {
+      API.getTheaterInfo(props.concertList)
+      .then(concerts => {
+        props.setConcertList(concerts);
+      })
+      .catch(e => 
+        { console.log(e); 
+
+      }); 
+    }
+  }, [reloadFromServer]);
   
   return (      // mt-5 lo mette più in basso
     <>
@@ -58,7 +71,9 @@ function TableLayout(props) {
         <h1 className='my-2'>List of Concerts and corresponding theater</h1>
       </div>
       <ConcertsTable 
-        concerts={props.concertList} loggedIn={props.loggedIn} />
+        concerts={props.concertList} loggedIn={props.loggedIn}
+        expandedConcertID={props.expandedConcertID} 
+        handleToggleSeats={props.handleToggleSeats} />
     </>
   );
 }

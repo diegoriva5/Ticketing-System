@@ -6,6 +6,7 @@ const cors = require('cors');
 
 const concertsDao = require('./dao-concerts');
 const userDao = require('./dao-users');
+const theatersDao = require('./dao-theaters');
 
 /*** init express and set-up the middlewares ***/
 const app = express();
@@ -90,6 +91,15 @@ app.get('/api/list-concerts',
     .catch((err) => res.status(500).json(err));
   }
 );
+
+/*** Theaters APIs ***/
+app.get('/api/get-theater-info/:id',
+  (req,res) => {
+    theatersDao.getInfo(req.params.id)
+    .then(theaters => res.json(theaters))
+    .catch((err) => res.status(500).json(err));
+  }
+)
 
 
 

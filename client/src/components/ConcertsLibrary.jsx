@@ -4,20 +4,7 @@ import { useState } from 'react';
 import { TheaterSeats } from './TheaterSeats';
 
 function ConcertsTable(props) {
-  const { concerts } = props;
-  const [expandedConcertID, setexpandedConcertID] = useState(null);
-
-
-  /*
-    When the user clicks the button, the handleToggleSeats function is called.
-    It receives the concertID of the clicked concert. If the concertID matches
-    the currently expandedConcertID, it means the map is already shown, so it 
-    collapses the map by setting expandedConcertID to null. If it doesn’t match,
-    it updates expandedConcertID to the clicked concertID to show the map.
-*/
-  const handleToggleSeats = (concertID) => {
-    setexpandedConcertID(prevId => prevId === concertID ? null : concertID);
-  };
+  const { concerts, expandedConcertID, handleToggleSeats } = props;
 
   return (
       <Table className="table table-bordered table-striped table-hover w-100">
@@ -40,8 +27,9 @@ function ConcertsTable(props) {
                         If the expandedConcertID is NULL, it means that isExpanded
                         is FALSE, so the 2d map is not shown.
                       */
-                      onToggleSeats={handleToggleSeats}
-                      loggedIn={props.loggedIn} />
+                      onToggleSeats={handleToggleSeats} 
+                      loggedIn={props.loggedIn}
+                  />
               ))}
           </tbody>
       </Table>
@@ -95,7 +83,9 @@ function ConcertRow(props) {
           {isExpanded && (
               <tr className="bg-danger text-white">
                   <td colSpan="3" className="text-center">
-                      <i>Attivo</i>
+                      <h1>{concertData.name} concert in {concertData.theater_name}</h1>
+                      <hr />
+                      <i>Tabella</i>
                   </td>
               </tr>
           )}
