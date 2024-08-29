@@ -29,6 +29,8 @@ function AppWithRouter(props) {
   const [theater, setTheater] = useState(null);
   const [expandedConcertID, setExpandedConcertID] = useState(null);
   const [occupied, setOccupied] = useState([]);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [reservationList, setReservationList] = useState([]);
 
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
@@ -102,15 +104,37 @@ function AppWithRouter(props) {
     if(expandedConcertID === concertID){
       setTheater(null);
       setOccupied([]);
+      setSelectedSeats([]);
     } else {
       try {
         const theaterInfo = await API.getTheaterInfo(theaterID);
         setTheater(theaterInfo);
         const reservationsInfo = await API.getReservations(concertID);
         setOccupied(reservationsInfo);
+        setSelectedSeats([]);
       } catch (err) {
         handleErrors(err);
       }
+    }
+  };
+
+  // Handle seat click for selecting/unselecting
+  const handleSeatClick = (row, column) => {
+    const isOccupied = occupied.some(seat => seat.row === row && seat.column === column);
+
+    if (isOccupied) {
+      return; // Do nothing if the seat is occupied
+    }
+
+    const seat = { row, column };
+    const isSelected = selectedSeats.some(s => s.row === row && s.column === column);
+
+    if (isSelected) {
+      // Remove from selected if it's already selected
+      setSelectedSeats(selectedSeats.filter(s => !(s.row === row && s.column === column)));
+    } else {
+      // Add to selected if it's not already selected
+      setSelectedSeats([...selectedSeats, seat]);
     }
   };
 
@@ -122,11 +146,14 @@ function AppWithRouter(props) {
                                   loggedIn={loggedIn} user={user} logout={handleLogout} />}>
           <Route index element={<TableLayout 
               concertList={concertList} setConcertList={setConcertList}
-              loggedIn={loggedIn}
+              loggedIn={loggedIn} user={user}
               expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
               handleToggleSeats={handleToggleSeats}
               theater={theater} setTheater={setTheater}
-              occupied={occupied} setOccupied={setOccupied} />} />
+              occupied={occupied} setOccupied={setOccupied}
+              selectedSeats={selectedSeats} onSeatClick={handleSeatClick}
+              reservationList={reservationList} setReservationList={setReservationList} />}
+               />
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>

@@ -110,6 +110,13 @@ app.get('/api/reservation/:concertId',
     .catch(err => res.status(500).json(err));
 });
 
+app.get('/api/reservationOfUser/:userId', 
+  (req, res) => {
+    reservationsDao.getReservationsByUserID(req.params.userId)
+    .then(reservations => res.json(reservations))
+    .catch(err => res.status(500).json(err));
+});
+
 
 /*** Users APIs ***/
 

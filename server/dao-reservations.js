@@ -30,3 +30,29 @@ exports.getReservationByConcertID = (concertID) => {
         });
     });
 }
+
+exports.getReservationsByUserID = (userID) => {
+    return new Promise((resolve, reject) => {
+        // SQL query to join reservations, concerts, and theaters tables
+        const sql = "SELECT reservations.reservation_id, concerts.name AS concert_name, theaters.name AS theater_name, reservations.row AS reserved_row, reservations.column AS reserved_column FROM reservations INNER JOIN concerts ON reservations.concert_id = concerts.id INNER JOIN theaters ON concerts.theater_id = theaters.id WHERE reservations.user_id = ?";
+        
+        // Execute the query
+        db.all(sql, [userID], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            
+            // Map the result rows to the desired format
+            const reservations = rows.map((row) => ({
+                reservation_id: row.reservation_id,
+                concertName: row.concert_name,
+                theaterName: row.theater_name,
+                reservedRow: row.reserved_row,
+                reservedColumn: row.reserved_column
+            }));
+            
+            resolve(reservations);
+        });
+    });
+};

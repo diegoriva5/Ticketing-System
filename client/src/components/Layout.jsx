@@ -5,8 +5,10 @@ import { useEffect } from 'react';
 import { Navigation } from './Navigation';
 import { LoginForm } from './Auth';
 import { ConcertsTable } from './ConcertsLibrary';
+import { ReservationsTable } from './ReservationTable.jsx';
 
 import API from '../API.js';
+
 
 
 
@@ -34,6 +36,7 @@ function LoginLayout(props) {
 }
   
 function TableLayout(props) {
+
   const location = useLocation();
   let reloadFromServer = true;
   if (location.state)
@@ -41,28 +44,54 @@ function TableLayout(props) {
 
   useEffect(() => {
     if (reloadFromServer) {
-      API.getConcerts(props.concertList)
+      API.getConcerts()
       .then(concerts => {
         props.setConcertList(concerts);
       })
-      .catch(e => 
-        { console.log(e); 
-
+      .catch(e => { 
+        console.log(e); 
       }); 
+
+      
+      if(props.loggedIn){
+        API.getReservationsOfUser(props.user.id)
+        .then(reservations => {
+          props.setReservationList(reservations);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      }
+      
     }
   }, [reloadFromServer]);
   
   return (      // mt-5 lo mette più in basso
     <>
+      <div className="text-center mt-5">
+        {props.loggedIn && (
+          <>
+            <div className="d-flex justify-content-between">
+              <h1 className='my-2'>List of Reservations of {props.user.name}</h1>
+            </div>
+            <ReservationsTable 
+              reservations={props.reservationList} />
+          </>
+          
+        )}
+      </div>
+      
+      
       <div className="flex-row justify-content-between mt-5">
-        <h1 className='my-2'>List of Concerts and corresponding theater</h1>
+        <h1 className='my-2'>List of Concerts</h1>
       </div>
       <ConcertsTable 
         concerts={props.concertList} loggedIn={props.loggedIn}
         expandedConcertID={props.expandedConcertID} 
         handleToggleSeats={props.handleToggleSeats}
         theater={props.theater} setTheater={props.setTheater}
-        occupied={props.occupied} setOccupied={props.setOccupied} />
+        occupied={props.occupied} setOccupied={props.setOccupied}
+        selectedSeats={props.selectedSeats} onSeatClick={props.onSeatClick} />
     </>
   );
 }

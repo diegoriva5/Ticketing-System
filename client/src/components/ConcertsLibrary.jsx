@@ -1,4 +1,4 @@
-import { Table, Form, Button } from 'react-bootstrap';
+import { Table, Form, Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { TheaterSeats } from './TheaterSeats';
@@ -6,7 +6,7 @@ import { TheaterSeats } from './TheaterSeats';
 import API from '../API.js';
 
 function ConcertsTable(props) {
-  const { concerts, expandedConcertID, handleToggleSeats, theater, occupied } = props;
+  const { concerts, expandedConcertID, handleToggleSeats, theater, occupied, selectedSeats, onSeatClick } = props;
 
   return (
       <Table className="table table-bordered table-striped table-hover w-100">
@@ -33,6 +33,8 @@ function ConcertsTable(props) {
                       loggedIn={props.loggedIn}
                       theater={theater}
                       occupied={occupied}
+                      selectedSeats={selectedSeats}
+                      onSeatClick={onSeatClick}
                   />
               ))}
           </tbody>
@@ -41,7 +43,7 @@ function ConcertsTable(props) {
 }
 
 function ConcertRow(props) {
-  const { concertData, isExpanded, onToggleSeats, loggedIn, theater, occupied } = props;
+  const { concertData, isExpanded, onToggleSeats, loggedIn, theater, occupied, selectedSeats, onSeatClick } = props;
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
       if(loggedIn){
@@ -87,11 +89,11 @@ function ConcertRow(props) {
           {isExpanded && theater && (
               <tr className="bg-danger text-white">
                   <td colSpan="3" className="text-center">
-                      <h1>{concertData.name}</h1>
-                      <hr />
-                      <i><h4>{theater.name} Seats</h4></i>
-                      <TheaterSeats theater={theater} occupied={occupied} />
+                      <TheaterSeats 
+                        theater={theater} occupied={occupied}
+                        selectedSeats={selectedSeats} onSeatClick={onSeatClick} />
                   </td>
+                  
               </tr>
           )}
       </>

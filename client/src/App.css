@@ -122,3 +122,8 @@
   display: block; /* Make each recap item a block element to stack them */
   margin-bottom: 10px; /* Space between recap items */
 }
+
+.dropdown-menu {
+  max-height: 200px; /* Adjust this value as needed */
+  overflow-y: auto; /* Add vertical scrollbar if content exceeds max-height */
+}
