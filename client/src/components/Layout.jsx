@@ -51,19 +51,6 @@ function TableLayout(props) {
       }); 
     }
   }, [reloadFromServer]);
-
-  useEffect(() => {
-    if (reloadFromServer) {
-      API.getTheaterInfo(props.concertList)
-      .then(concerts => {
-        props.setConcertList(concerts);
-      })
-      .catch(e => 
-        { console.log(e); 
-
-      }); 
-    }
-  }, [reloadFromServer]);
   
   return (      // mt-5 lo mette più in basso
     <>
@@ -73,7 +60,8 @@ function TableLayout(props) {
       <ConcertsTable 
         concerts={props.concertList} loggedIn={props.loggedIn}
         expandedConcertID={props.expandedConcertID} 
-        handleToggleSeats={props.handleToggleSeats} />
+        handleToggleSeats={props.handleToggleSeats}
+        theater={props.theater} setTheater={props.setTheater} />
     </>
   );
 }

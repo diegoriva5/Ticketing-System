@@ -41,3 +41,73 @@
   color: #888;
 }
 
+/* App.css or a separate CSS file for TheaterSeats */
+
+.theater-seats {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.seat-grid {
+  display: flex;
+  flex-direction: column; /* Align rows vertically */
+  gap: 10px; /* Space between rows */
+}
+
+.seat-row {
+  display: flex; /* Align seats in each row horizontally */
+  justify-content: center; /* Center the seats within each row */
+  gap: 10px; /* Space between seats */
+}
+
+.stage {
+  width: 80%; /* Adjust the width as needed */
+  height: 100px; /* Increased height for a more pronounced stage */
+  margin: 0 auto 30px; /* Center the stage and add space below it */
+  background: #222; /* Dark background for the stage */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px; /* Rounded corners for a modern look */
+  font-weight: bold;
+  font-size: 24px; /* Larger font size for prominence */
+  text-transform: uppercase;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5); /* Deep shadow for added depth */
+  border: 3px solid #000; /* Bold border for definition */
+  position: relative; /* Positioning for potential additional effects */
+  overflow: hidden; /* Hide any overflow content */
+}
+
+.seat {
+  width: 40px; /* Width of each seat */
+  height: 40px; /* Height of each seat */
+  background-color: #2ecc71; /* Seat color, resembling a cushion */
+  border: 2px solid #27ae60; /* Border to create a defined edge */
+  border-radius: 8px; /* Rounded corners for a cushion-like appearance */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for a 3D effect */
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transition for interactions */
+}
+
+.seat:hover {
+  background-color: #27ae60; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+.seat.selected {
+  background-color: #f1c40f; /* Different color for selected seats */
+  border-color: #f39c12;
+}
+
+.seat.occupied {
+  background-color: #e74c3c; /* Color for occupied seats */
+  border-color: #c0392b;
+  cursor: not-allowed; /* Change cursor to indicate unavailability */
+}

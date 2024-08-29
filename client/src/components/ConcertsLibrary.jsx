@@ -1,10 +1,12 @@
 import { Table, Form, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TheaterSeats } from './TheaterSeats';
 
+import API from '../API.js';
+
 function ConcertsTable(props) {
-  const { concerts, expandedConcertID, handleToggleSeats } = props;
+  const { concerts, expandedConcertID, handleToggleSeats, theater } = props;
 
   return (
       <Table className="table table-bordered table-striped table-hover w-100">
@@ -29,6 +31,7 @@ function ConcertsTable(props) {
                       */
                       onToggleSeats={handleToggleSeats} 
                       loggedIn={props.loggedIn}
+                      theater={theater}
                   />
               ))}
           </tbody>
@@ -37,11 +40,11 @@ function ConcertsTable(props) {
 }
 
 function ConcertRow(props) {
-  const { concertData, isExpanded, onToggleSeats, loggedIn } = props;
+  const { concertData, isExpanded, onToggleSeats, loggedIn, theater } = props;
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
       if(loggedIn){
-        onToggleSeats(concertData.id);
+        onToggleSeats(concertData.id, concertData.theater_id);
         // Selects which row (controlled by the concert.id) needs to be expanded
       }
   };
@@ -80,12 +83,13 @@ function ConcertRow(props) {
                 )}
               </td>
           </tr>
-          {isExpanded && (
+          {isExpanded && theater && (
               <tr className="bg-danger text-white">
                   <td colSpan="3" className="text-center">
-                      <h1>{concertData.name} concert in {concertData.theater_name}</h1>
+                      <h1>{concertData.name}</h1>
                       <hr />
-                      <i>Tabella</i>
+                      <i><h4>{theater.name} Seats</h4></i>
+                      <TheaterSeats theater={theater} />
                   </td>
               </tr>
           )}

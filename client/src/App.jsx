@@ -96,21 +96,32 @@ function AppWithRouter(props) {
     collapses the map by setting expandedConcertID to null. If it doesn’t match,
     it updates expandedConcertID to the clicked concertID to show the map.
   */
-  const handleToggleSeats = (concertID) => {
+  const handleToggleSeats = async (concertID, theaterID) => {
     setExpandedConcertID(prevId => prevId === concertID ? null : concertID);
+    if(expandedConcertID === concertID){
+      setTheater(null);
+    } else {
+      try {
+        const theaterInfo = await API.getTheaterInfo(theaterID);
+        setTheater(theaterInfo);
+      } catch (err) {
+        handleErrors(err);
+      }
+    }
   };
+
 
   return (
     <Routes>
       <Route path="/" element={<GenericLayout 
                                   message={message} setMessage={setMessage}
-                                  theater={theater} setTheater={setTheater}
                                   loggedIn={loggedIn} user={user} logout={handleLogout} />}>
           <Route index element={<TableLayout 
               concertList={concertList} setConcertList={setConcertList}
               loggedIn={loggedIn}
               expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
-              handleToggleSeats={handleToggleSeats} />} />
+              handleToggleSeats={handleToggleSeats}
+              theater={theater} setTheater={setTheater} />} />
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>

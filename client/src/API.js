@@ -55,15 +55,15 @@ const getConcerts = async () => {
 
 const getTheaterInfo = async (id) => {
   return getJson(
-    fetch(SERVER_URL + 'get-theater-info/:id')
+    fetch(SERVER_URL + 'get-theater-info/' + id)
   ).then( json => {
       const theater = {
-        id: theater.id,
-        name: theater.name,
-        size: theater.size,
-        rows: theater.rows,
-        columns: theater.columns,
-        seats: theater.seats
+        id: json.id,
+        name: json.name,
+        size: json.size,
+        rows: json.rows,
+        columns: json.columns,
+        seats: json.seats
       }
       return theater;
     })
