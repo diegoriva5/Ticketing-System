@@ -6,7 +6,7 @@ import { TheaterSeats } from './TheaterSeats';
 import API from '../API.js';
 
 function ConcertsTable(props) {
-  const { concerts, expandedConcertID, handleToggleSeats, theater } = props;
+  const { concerts, expandedConcertID, handleToggleSeats, theater, occupied } = props;
 
   return (
       <Table className="table table-bordered table-striped table-hover w-100">
@@ -32,6 +32,7 @@ function ConcertsTable(props) {
                       onToggleSeats={handleToggleSeats} 
                       loggedIn={props.loggedIn}
                       theater={theater}
+                      occupied={occupied}
                   />
               ))}
           </tbody>
@@ -40,7 +41,7 @@ function ConcertsTable(props) {
 }
 
 function ConcertRow(props) {
-  const { concertData, isExpanded, onToggleSeats, loggedIn, theater } = props;
+  const { concertData, isExpanded, onToggleSeats, loggedIn, theater, occupied } = props;
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
       if(loggedIn){
@@ -89,7 +90,7 @@ function ConcertRow(props) {
                       <h1>{concertData.name}</h1>
                       <hr />
                       <i><h4>{theater.name} Seats</h4></i>
-                      <TheaterSeats theater={theater} />
+                      <TheaterSeats theater={theater} occupied={occupied} />
                   </td>
               </tr>
           )}

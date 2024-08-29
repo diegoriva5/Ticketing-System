@@ -28,6 +28,7 @@ function AppWithRouter(props) {
   const [concertList, setConcertList] = useState([]);
   const [theater, setTheater] = useState(null);
   const [expandedConcertID, setExpandedConcertID] = useState(null);
+  const [occupied, setOccupied] = useState([]);
 
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
@@ -100,10 +101,13 @@ function AppWithRouter(props) {
     setExpandedConcertID(prevId => prevId === concertID ? null : concertID);
     if(expandedConcertID === concertID){
       setTheater(null);
+      setOccupied([]);
     } else {
       try {
         const theaterInfo = await API.getTheaterInfo(theaterID);
         setTheater(theaterInfo);
+        const reservationsInfo = await API.getReservations(concertID);
+        setOccupied(reservationsInfo);
       } catch (err) {
         handleErrors(err);
       }
@@ -121,7 +125,8 @@ function AppWithRouter(props) {
               loggedIn={loggedIn}
               expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
               handleToggleSeats={handleToggleSeats}
-              theater={theater} setTheater={setTheater} />} />
+              theater={theater} setTheater={setTheater}
+              occupied={occupied} setOccupied={setOccupied} />} />
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>

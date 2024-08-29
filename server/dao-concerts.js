@@ -1,6 +1,6 @@
 'use strict';
 
-/* Data Access Object (DAO) module for accessing users data */
+/* Data Access Object (DAO) module for accessing concerts data */
 
 const db = require('./db');
 

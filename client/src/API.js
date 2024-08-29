@@ -69,6 +69,24 @@ const getTheaterInfo = async (id) => {
     })
 }
 
+/* API to get all the reservations related on a specific concert */
+
+const getReservations = async (concertID) => {
+  return getJson(
+    fetch(SERVER_URL + 'reservation/' + concertID)
+  ).then( json => {
+    return json.map((reservation) => {
+      const reservationLine = {
+        reservation_id: reservation.reservation_id,
+        concert_id: reservation.concert_id,
+        row: reservation.row,
+        column: reservation.column,
+        user_id: reservation.user_id
+      }
+      return reservationLine;
+    })
+  })
+}
 
 
 /*** Authentication functions ***/
@@ -113,6 +131,6 @@ const logOut = async() => {
 }
 
   
-const API = { getConcerts, getTheaterInfo, logIn, getUserInfo, logOut };
+const API = { getConcerts, getTheaterInfo, getReservations, logIn, getUserInfo, logOut };
 
 export default API;

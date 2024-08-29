@@ -61,7 +61,8 @@ function TableLayout(props) {
         concerts={props.concertList} loggedIn={props.loggedIn}
         expandedConcertID={props.expandedConcertID} 
         handleToggleSeats={props.handleToggleSeats}
-        theater={props.theater} setTheater={props.setTheater} />
+        theater={props.theater} setTheater={props.setTheater}
+        occupied={props.occupied} setOccupied={props.setOccupied} />
     </>
   );
 }

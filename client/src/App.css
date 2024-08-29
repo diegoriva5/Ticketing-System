@@ -80,34 +80,45 @@
 }
 
 .seat {
-  width: 40px; /* Width of each seat */
-  height: 40px; /* Height of each seat */
-  background-color: #2ecc71; /* Seat color, resembling a cushion */
-  border: 2px solid #27ae60; /* Border to create a defined edge */
-  border-radius: 8px; /* Rounded corners for a cushion-like appearance */
+  width: 40px;
+  height: 40px;
+  background-color: #2ecc71; /* Green for available seats */
+  border: 2px solid #27ae60;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   font-weight: bold;
   color: white;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for a 3D effect */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s; /* Smooth transition for interactions */
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .seat:hover {
-  background-color: #27ae60; /* Darker shade on hover */
-  transform: translateY(-2px); /* Slight lift effect on hover */
+  background-color: #27ae60;
+  transform: translateY(-2px);
 }
 
 .seat.selected {
-  background-color: #f1c40f; /* Different color for selected seats */
+  background-color: #f1c40f; /* Yellow color for selected seats */
   border-color: #f39c12;
 }
 
 .seat.occupied {
-  background-color: #e74c3c; /* Color for occupied seats */
+  background-color: #e74c3c; /* Red for occupied seats */
   border-color: #c0392b;
-  cursor: not-allowed; /* Change cursor to indicate unavailability */
+  cursor: not-allowed; /* Change cursor for unavailability */
+}
+
+.seat-recap {
+  margin-top: 20px; /* Add space above recap section */
+  text-align: center; /* Center align text */
+  font-style: italic; /* Italicize text */
+}
+
+.seat-recap i {
+  display: block; /* Make each recap item a block element to stack them */
+  margin-bottom: 10px; /* Space between recap items */
 }

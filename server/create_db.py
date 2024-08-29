@@ -50,10 +50,10 @@ CREATE TABLE IF NOT EXISTS reservations (
     reservation_id INTEGER PRIMARY KEY AUTOINCREMENT,
     concert_id INTEGER,
     row INTEGER NOT NULL,
-    place TEXT NOT NULL,
-    user INTEGER,
+    column TEXT NOT NULL,
+    user_id INTEGER,
     FOREIGN KEY (concert_id) REFERENCES concerts(id),
-    FOREIGN KEY (user) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 )
 ''')
 
@@ -125,7 +125,7 @@ reservations_data = [
     (5, 5, 'B', 4)
 ]
 cursor.executemany('''
-INSERT INTO reservations (concert_id, row, place, user)
+INSERT INTO reservations (concert_id, row, column, user_id)
 VALUES (?, ?, ?, ?)
 ''', reservations_data)
 
