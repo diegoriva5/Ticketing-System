@@ -6,7 +6,7 @@ import { React, useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Toast } from 'react-bootstrap';
 import { BrowserRouter, Routes, Route, Outlet, Link, useParams, Navigate, useNavigate } from 'react-router-dom';
 
-import { GenericLayout, NotFoundLayout, LoginLayout, TableLayout } from './components/Layout';
+import { GenericLayout, NotFoundLayout, LoginLayout, TableLayout, ConfirmationLayout } from './components/Layout';
 import API from './API.js';
 
 function App() {
@@ -155,6 +155,17 @@ function AppWithRouter(props) {
               selectedSeats={selectedSeats} onSeatClick={handleSeatClick}
               reservationList={reservationList} setReservationList={setReservationList} />}/>
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
+          <Route path="/confirmation" element={
+          <ConfirmationLayout 
+            user={user}
+            concertName={concertList.find(concert => concert.id === expandedConcertID)?.name}
+            theaterName={theater?.name}
+            selectedSeats={selectedSeats} 
+            setSelectedSeats={setSelectedSeats}
+            expandedConcertID={expandedConcertID} 
+            setExpandedConcertID={setExpandedConcertID}
+          />
+          } />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>
     </Routes>

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Table, Form, Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+
 import '../App.css'; // Ensure CSS is imported
 
 function TheaterSeats(props) {
+  const navigate = useNavigate();  
 
   const { theater, occupied, selectedSeats, onSeatClick, loggedIn } = props;
   const [loading, setLoading] = useState(true);
@@ -20,6 +23,15 @@ function TheaterSeats(props) {
   if (loading) {
     simulateLoading();
   }
+
+  const handleBookingClick = () => {
+    if(selectedSeats.length > 0){
+      navigate('/confirmation'); // Navigate to the confirmation page
+    } else {
+      alert('No selected seats!');
+    }
+    
+  };
 
   // Helper function to check if a seat is occupied
   const isSeatOccupied = (row, column) => {
@@ -67,7 +79,7 @@ function TheaterSeats(props) {
   const handleConfirm = () => {
     if (ticketCount > 0) {
       alert(`You have selected ${ticketCount} tickets.`);
-      // Further logic can go here, such as passing the count to another component or making an API call
+      
     } else {
       alert('Please select the number of tickets.');
     }
@@ -76,7 +88,10 @@ function TheaterSeats(props) {
   return (
     <div className="theater-seats">
       {loading ? (
-        <p>Loading seats...</p> // Show loading message
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading seats...</span>
+        </div>
+      
       ) : (
         <>
           <div className="stage">Stage</div>
@@ -95,7 +110,7 @@ function TheaterSeats(props) {
           <hr />
           {loggedIn ? ( // Show buttons if user is logged in
             <div className="text-center mb-3">
-              <Button variant="warning">
+              <Button variant="warning" onClick={handleBookingClick}>
                 Click here to book selected seats
               </Button>
               <div className="text-center">

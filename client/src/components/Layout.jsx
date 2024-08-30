@@ -1,14 +1,13 @@
 import { Row, Col, Button, Alert, Toast } from 'react-bootstrap';
-import { Outlet, Link, useParams, Navigate, useLocation } from 'react-router-dom';
+import { Outlet, Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigation } from './Navigation';
 import { LoginForm } from './Auth';
 import { ConcertsTable } from './ConcertsLibrary';
 import { ReservationsTable } from './ReservationTable.jsx';
 
 import API from '../API.js';
-
 
 
 
@@ -95,6 +94,64 @@ function TableLayout(props) {
     </>
   );
 }
+
+function ConfirmationLayout(props) {
+  const { user, concertName, theaterName, selectedSeats, setSelectedSeats, setExpandedConcertID } = props;
+
+  const navigate = useNavigate(); 
+  const [loading, setLoading] = useState(true);
+
+  // Simulate loading delay
+  const simulateLoading = () => {
+    setTimeout(() => {
+      setLoading(false); // Update state to hide the loading message
+    }, 2000); // 2-second delay
+  };
+
+  // Call simulateLoading immediately to start the timer
+  if (loading) {
+    simulateLoading();
+  }
+
+  const handleConfirmBooking = () => {
+    // Logic for confirming booking, e.g., sending data to the API
+    alert('Booking confirmed!');
+    setSelectedSeats([]);
+    navigate('/'); // Navigate back to the home page or wherever you want after confirmation
+  };
+
+  const handleBack = () => {
+    setSelectedSeats([]);
+    setExpandedConcertID(null);
+    navigate('/'); // Navigate back to the home page or wherever you want after confirmation
+  };
+
+  return (
+    <>
+      {loading ? ( // Show loading spinner if loading is true
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Processing confirmation...</span>
+          </div>
+        </div>
+      ) : (
+        <>
+          <h2>Booking Confirmation</h2>
+          <Row>
+            <Col>
+              <p><strong>Name:</strong> {user.name}</p>
+              <p><strong>Concert:</strong> {concertName}</p>
+              <p><strong>Theater:</strong> {theaterName}</p>
+              <p><strong>Selected Seats:</strong> {selectedSeats.map(seat => `${seat.row}${seat.column}`).join(', ')}</p>
+              <Button variant="success" onClick={handleConfirmBooking}>Confirm Booking</Button>
+              <Button variant="danger" onClick={handleBack}>Back</Button>
+            </Col>
+          </Row>
+        </>
+      )}
+    </>
+  );
+}
   
 function GenericLayout(props) {
   return (
@@ -125,4 +182,4 @@ function GenericLayout(props) {
 }
 
 
-export { GenericLayout, NotFoundLayout, LoginLayout, TableLayout };
+export { GenericLayout, NotFoundLayout, LoginLayout, TableLayout, ConfirmationLayout };
