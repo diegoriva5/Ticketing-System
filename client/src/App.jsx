@@ -139,6 +139,15 @@ function AppWithRouter(props) {
     }
   };
 
+  const deleteReservation = (reservationID) => {
+    // changes the state by passing a callback that will compute, from the old Array,
+    // a new Array where the filmId is not present anymore
+    //setFilmList(filmList => filmList.filter(e => e.id!==filmId));
+    API.deleteReservationByID(reservationID)
+      .then(()=> setDirty(true))
+      .catch(err=>handleErrors(err));
+  }
+
 
   return (
     <Routes>
@@ -152,19 +161,21 @@ function AppWithRouter(props) {
               handleToggleSeats={handleToggleSeats}
               theater={theater} setTheater={setTheater}
               occupied={occupied} setOccupied={setOccupied}
-              selectedSeats={selectedSeats} onSeatClick={handleSeatClick}
-              reservationList={reservationList} setReservationList={setReservationList} />}/>
+              selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
+              onSeatClick={handleSeatClick}
+              reservationList={reservationList} setReservationList={setReservationList}
+              deleteReservation={deleteReservation} />}/>
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="/confirmation" element={
-          <ConfirmationLayout 
-            user={user}
-            concertName={concertList.find(concert => concert.id === expandedConcertID)?.name}
-            theaterName={theater?.name}
-            selectedSeats={selectedSeats} 
-            setSelectedSeats={setSelectedSeats}
-            expandedConcertID={expandedConcertID} 
-            setExpandedConcertID={setExpandedConcertID}
-          />
+            <ConfirmationLayout 
+              user={user}
+              concertName={concertList.find(concert => concert.id === expandedConcertID)?.name}
+              theaterName={theater?.name}
+              selectedSeats={selectedSeats} 
+              setSelectedSeats={setSelectedSeats}
+              expandedConcertID={expandedConcertID} 
+              setExpandedConcertID={setExpandedConcertID}
+            />
           } />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>

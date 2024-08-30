@@ -107,6 +107,26 @@ const getReservationsOfUser = async (userID) => {
   })
 }
 
+/* API to confirm booking */
+const confirmBooking = async (bookingData) => {
+  return getJson(fetch(SERVER_URL + 'create-reservations-entry', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',  // this parameter specifies that authentication cookie must be forwarded
+    body: JSON.stringify(bookingData),
+  }));
+}
+
+/* API to delete a reseravation */
+const deleteReservationByID = async(reservationID) => {
+  return getJson(
+    fetch(SERVER_URL + "delete-reservation/" + reservationID, {
+      method: 'DELETE',
+    })
+  )
+}
 
 
 /*** Authentication functions ***/
@@ -151,6 +171,6 @@ const logOut = async() => {
 }
 
   
-const API = { getConcerts, getTheaterInfo, getReservations, getReservationsOfUser, logIn, getUserInfo, logOut };
+const API = { getConcerts, getTheaterInfo, getReservations, getReservationsOfUser, confirmBooking, deleteReservationByID, logIn, getUserInfo, logOut };
 
 export default API;

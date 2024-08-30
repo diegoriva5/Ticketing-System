@@ -7,7 +7,7 @@ import '../App.css'; // Ensure CSS is imported
 function TheaterSeats(props) {
   const navigate = useNavigate();  
 
-  const { theater, occupied, selectedSeats, onSeatClick, loggedIn } = props;
+  const { theater, occupied, selectedSeats, setSelectedSeats, onSeatClick, loggedIn } = props;
   const [loading, setLoading] = useState(true);
   const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book
   
@@ -72,26 +72,53 @@ function TheaterSeats(props) {
     if(loggedIn){
       setTicketCount(count); // Update the state with the selected number of tickets
     }
-    
   };
 
   // Handle confirmation of tickets
   const handleConfirm = () => {
     if (ticketCount > 0) {
-      alert(`You have selected ${ticketCount} tickets.`);
-      
+      const newSelectedSeats = []; // Temporary array to store the seats to be booked
+      let seatsNeeded = ticketCount; // Number of tickets needed
+  
+      // Iterate over the seat grid to find available seats
+      for (let rowIndex = 1; rowIndex <= theater.rows; rowIndex++) {
+        for (let colIndex = 0; colIndex < theater.columns; colIndex++) {
+          const seatRow = rowIndex;
+          const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
+  
+          // If the seat is not occupied and we still need seats, add it to the new selection
+          if (!isSeatOccupied(seatRow, seatColumn) && !isSeatSelected(seatRow, seatColumn) && seatsNeeded > 0) {
+            newSelectedSeats.push({ row: seatRow, column: seatColumn });
+            seatsNeeded--;
+          }
+  
+          // If we've selected enough seats, break out of the loop
+          if (seatsNeeded === 0) break;
+        }
+        if (seatsNeeded === 0) break;
+      }
+  
+      if (newSelectedSeats.length === ticketCount) {
+        // Update the selected seats state directly
+        setSelectedSeats([...selectedSeats, ...newSelectedSeats]);
+  
+        // Navigate to the confirmation page
+        navigate('/confirmation');
+      } else {
+        alert('Not enough available seats.');
+      }
     } else {
       alert('Please select the number of tickets.');
     }
   };
+  
 
   return (
     <div className="theater-seats">
       {loading ? (
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading seats...</span>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading seats...</span>
         </div>
-      
       ) : (
         <>
           <div className="stage">Stage</div>
@@ -114,13 +141,15 @@ function TheaterSeats(props) {
                 Click here to book selected seats
               </Button>
               <div className="text-center">
-                <div>OR</div>
+                <div className="my-2 text-center">OR</div>
               </div>
-              <div className="d-flex justify-content-center mb-3">
+              <div className="d-flex align-items-center justify-content-center mb-3">
+                <div className="me-2">Select number of tickets: </div>
                 <DropdownButton
                   id="dropdown-ticket-select"
-                  title={`Select Number of Tickets (${ticketCount})`} // Show the current selection
+                  title={`${ticketCount}`} // Show the current selection
                   className="me-2"
+                  variant="dark"
                 >
                   {Array.from({ length: availableSeats }, (_, i) => i + 1).map((num) => (
                     <Dropdown.Item 
@@ -134,7 +163,7 @@ function TheaterSeats(props) {
                 </DropdownButton>
                 <Button 
                   className="ms-2" // Margin to the left
-                  variant="primary" 
+                  variant="dark" 
                   onClick={handleConfirm} // Confirm button to handle the booking
                 >
                   Confirm Automatic Booking

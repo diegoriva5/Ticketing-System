@@ -117,6 +117,34 @@ app.get('/api/reservationOfUser/:userId',
     .catch(err => res.status(500).json(err));
 });
 
+// API to confirm booking and create reservations
+app.post('/api/create-reservations-entry',
+  (req, res) => {
+  const { concertID, seats, userID } = req.body;
+
+  reservationsDao.createReservations(concertID, seats, userID)
+    .then(result => res.status(200).json(result))
+    .catch(err => {
+        console.error(err);
+        res.status(400).json({ error: err.message });
+    });
+  }
+);
+
+// API to delete a reservation
+app.delete('api/delete-reservation/:id',
+  async (req, res) => {
+    try {
+      // NOTE: if there is no film with the specified id, the delete operation is considered successful.
+      await reservationsDao.deleteReservation(req.params.id);
+      res.status(200).json("");  // Empty body 
+    } catch (err) {
+      res.status(503).json({ error: `Database error during the deletion of film ${req.params.id}: ${err} ` });
+    }
+  }
+);
+
+
 
 /*** Users APIs ***/
 

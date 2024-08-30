@@ -6,7 +6,7 @@ import { TheaterSeats } from './TheaterSeats';
 import API from '../API.js';
 
 function ConcertsTable(props) {
-  const { concerts, expandedConcertID, handleToggleSeats, theater, occupied, selectedSeats, onSeatClick } = props;
+  const { concerts, expandedConcertID, handleToggleSeats, theater, occupied, selectedSeats, setSelectedSeats, onSeatClick } = props;
 
   return (
       <Table className="table table-bordered table-striped table-hover w-100">
@@ -34,7 +34,7 @@ function ConcertsTable(props) {
                       loggedIn={props.loggedIn}
                       theater={theater}
                       occupied={occupied}
-                      selectedSeats={selectedSeats}
+                      selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
                       onSeatClick={onSeatClick}
                   />
               ))}
@@ -44,7 +44,7 @@ function ConcertsTable(props) {
 }
 
 function ConcertRow(props) {
-  const { concertData, isExpanded, onToggleSeats, loggedIn, theater, occupied, selectedSeats, onSeatClick } = props;
+  const { concertData, isExpanded, onToggleSeats, loggedIn, theater, occupied, selectedSeats, setSelectedSeats, onSeatClick } = props;
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
       
@@ -86,7 +86,8 @@ function ConcertRow(props) {
                   <td colSpan="3" className="text-center">
                       <TheaterSeats 
                         theater={theater} occupied={occupied}
-                        selectedSeats={selectedSeats} onSeatClick={onSeatClick}
+                        selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
+                        onSeatClick={onSeatClick}
                         loggedIn={loggedIn} />
                   </td>
                   

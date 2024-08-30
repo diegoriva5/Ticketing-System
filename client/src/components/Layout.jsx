@@ -74,7 +74,8 @@ function TableLayout(props) {
               <h1 className='my-2'>List of Reservations of {props.user.name}</h1>
             </div>
             <ReservationsTable 
-              reservations={props.reservationList} />
+              reservations={props.reservationList}
+              deleteReservation={props.deleteReservation} />
           </>
           
         )}
@@ -90,13 +91,14 @@ function TableLayout(props) {
         handleToggleSeats={props.handleToggleSeats}
         theater={props.theater} setTheater={props.setTheater}
         occupied={props.occupied} setOccupied={props.setOccupied}
-        selectedSeats={props.selectedSeats} onSeatClick={props.onSeatClick} />
+        selectedSeats={props.selectedSeats} setSelectedSeats={props.setSelectedSeats}
+        onSeatClick={props.onSeatClick} />
     </>
   );
 }
 
 function ConfirmationLayout(props) {
-  const { user, concertName, theaterName, selectedSeats, setSelectedSeats, setExpandedConcertID } = props;
+  const { user, concertName, theaterName, selectedSeats, setSelectedSeats, expandedConcertID, setExpandedConcertID } = props;
 
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(true);
@@ -113,11 +115,20 @@ function ConfirmationLayout(props) {
     simulateLoading();
   }
 
-  const handleConfirmBooking = () => {
-    // Logic for confirming booking, e.g., sending data to the API
-    alert('Booking confirmed!');
-    setSelectedSeats([]);
-    navigate('/'); // Navigate back to the home page or wherever you want after confirmation
+  const handleConfirmBooking = async () => {
+    try {
+      const bookingData = {
+        concertID: expandedConcertID, // Assuming expandedConcertID is the concert ID
+        seats: selectedSeats.map(seat => `${seat.row}${seat.column}`),
+        userID: user.id
+      };
+      await API.confirmBooking(bookingData);
+      alert('Booking confirmed!');
+      setSelectedSeats([]); // Clear selected seats
+      navigate('/'); // Navigate back to the home page or wherever you want after confirmation
+    } catch (error) {
+      alert('Booking failed. Please try again.');
+    }
   };
 
   const handleBack = () => {

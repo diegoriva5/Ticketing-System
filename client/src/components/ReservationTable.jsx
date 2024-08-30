@@ -24,7 +24,8 @@ function ReservationsTable(props) {
             {reservations.map((reservation) => (
                 <ReservationRow 
                     key={reservation.reservation_id} 
-                    reservationData={reservation} />
+                    reservationData={reservation}
+                    deleteReservation={props.deleteReservation} />
             ))}
         </tbody>
       </Table>
@@ -33,6 +34,10 @@ function ReservationsTable(props) {
 
 function ReservationRow(props) {
   const { reservationData } = props;
+
+  const handleDeleteClick = () => {
+    props.deleteReservation(reservationData.reservation_id);
+  };
 
   const seat = reservationData.reservedRow + reservationData.reservedColumn;
   /* Aggiungere l'onClick, e quindi l'onDelete al tasto per il delete (Lab10)*/ 
@@ -50,7 +55,7 @@ function ReservationRow(props) {
               </td>
               <td className="justify-content-center align-items-center">
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <i className='bi bi-trash'></i>
+                  <i className='bi bi-trash' onClick={handleDeleteClick}></i>
                 </div>
               </td>
           </tr>
