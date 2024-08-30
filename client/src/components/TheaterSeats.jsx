@@ -4,7 +4,7 @@ import '../App.css'; // Ensure CSS is imported
 
 function TheaterSeats(props) {
 
-  const { theater, occupied, selectedSeats, onSeatClick } = props;
+  const { theater, occupied, selectedSeats, onSeatClick, loggedIn } = props;
   const [loading, setLoading] = useState(true);
   const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book
   
@@ -39,7 +39,7 @@ function TheaterSeats(props) {
         const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
         const isOccupied = isSeatOccupied(seatRow, seatColumn);
         const isSelected = isSeatSelected(seatRow, seatColumn);
-        const seatClass = isOccupied ? 'seat occupied' : isSelected ? 'seat selected' : 'seat';
+        const seatClass = isOccupied ? 'seat occupied' : (isSelected && loggedIn) ? 'seat selected' : 'seat';
 
         return (
           <div
@@ -57,7 +57,10 @@ function TheaterSeats(props) {
   const availableSeats = theater.seats - occupied.length;
 
   const handleSelectTickets = (count) => {
-    setTicketCount(count); // Update the state with the selected number of tickets
+    if(loggedIn){
+      setTicketCount(count); // Update the state with the selected number of tickets
+    }
+    
   };
 
   // Handle confirmation of tickets
@@ -85,42 +88,50 @@ function TheaterSeats(props) {
             <i>Total seats: {theater.seats}</i>
             <i>Occupied seats: {occupied.length}</i>
             <i>Available seats: {availableSeats}</i>
-            <i>Selected seats: {selectedSeats.length}</i>
+            {loggedIn && (
+              <i>Selected seats: {selectedSeats.length}</i>
+            )}
           </div>
           <hr />
-          <div className="text-center mb-3">
-            <Button variant="warning">
-              Click here to book selected seats
-            </Button>
-            <div className="text-center">
-              <div>OR</div>
-            </div>
-            <div className="d-flex justify-content-center mb-3">
-              <DropdownButton
-                id="dropdown-ticket-select"
-                title={`Select Number of Tickets (${ticketCount})`} // Show the current selection
-                className="me-2"
-              >
-                {Array.from({ length: availableSeats }, (_, i) => i + 1).map((num) => (
-                  <Dropdown.Item 
-                    key={num} 
-                    eventKey={num}
-                    onClick={() => handleSelectTickets(num)} // Update the state when an option is selected
-                  >
-                    {num}
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-              <Button 
-                className="ms-2" // Margin to the left
-                variant="primary" 
-                onClick={handleConfirm} // Confirm button to handle the booking
-              >
-                Confirm Automatic Booking
+          {loggedIn ? ( // Show buttons if user is logged in
+            <div className="text-center mb-3">
+              <Button variant="warning">
+                Click here to book selected seats
               </Button>
+              <div className="text-center">
+                <div>OR</div>
+              </div>
+              <div className="d-flex justify-content-center mb-3">
+                <DropdownButton
+                  id="dropdown-ticket-select"
+                  title={`Select Number of Tickets (${ticketCount})`} // Show the current selection
+                  className="me-2"
+                >
+                  {Array.from({ length: availableSeats }, (_, i) => i + 1).map((num) => (
+                    <Dropdown.Item 
+                      key={num} 
+                      eventKey={num}
+                      onClick={() => handleSelectTickets(num)} // Update the state when an option is selected
+                    >
+                      {num}
+                    </Dropdown.Item>
+                  ))}
+                </DropdownButton>
+                <Button 
+                  className="ms-2" // Margin to the left
+                  variant="primary" 
+                  onClick={handleConfirm} // Confirm button to handle the booking
+                >
+                  Confirm Automatic Booking
+                </Button>
+              </div>
             </div>
+          ) : ( // Show log-in prompt if user is not logged in
+            <div className="text-center mb-3">
+              <p>Log-in if you want to book some seats!</p>
+            </div>
+          )}
             
-          </div>
         </>
       )}
     </div>

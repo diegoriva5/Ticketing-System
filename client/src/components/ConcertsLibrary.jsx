@@ -14,6 +14,7 @@ function ConcertsTable(props) {
               <tr>
                   <th className="text-center">Concert</th>
                   <th className="text-center">Theater</th>
+                  <th className="bi bi-ui-checks-grid"></th>
               </tr>
           </thead>
           <tbody>
@@ -46,10 +47,10 @@ function ConcertRow(props) {
   const { concertData, isExpanded, onToggleSeats, loggedIn, theater, occupied, selectedSeats, onSeatClick } = props;
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
-      if(loggedIn){
+      
         onToggleSeats(concertData.id, concertData.theater_id);
         // Selects which row (controlled by the concert.id) needs to be expanded
-      }
+      
   };
   
   /*
@@ -75,15 +76,9 @@ function ConcertRow(props) {
                   <p>{concertData.theater_name}</p>
               </td>
               <td className="text-center">
-                {loggedIn ? (
-                    <Button variant="primary" onClick={toggleSeats}>
-                        {isExpanded ? 'Hide seats ▲' : 'Book a seat'}
-                    </Button>
-                ) : (
-                    <Link to="/login">
-                        <Button variant="primary">Book a seat</Button>
-                    </Link>
-                )}
+                <Button variant="primary" onClick={toggleSeats}>
+                    {isExpanded ? 'Hide seats ▲' : 'Show seats'}
+                </Button>   
               </td>
           </tr>
           {isExpanded && theater && (
@@ -91,7 +86,8 @@ function ConcertRow(props) {
                   <td colSpan="3" className="text-center">
                       <TheaterSeats 
                         theater={theater} occupied={occupied}
-                        selectedSeats={selectedSeats} onSeatClick={onSeatClick} />
+                        selectedSeats={selectedSeats} onSeatClick={onSeatClick}
+                        loggedIn={loggedIn} />
                   </td>
                   
               </tr>

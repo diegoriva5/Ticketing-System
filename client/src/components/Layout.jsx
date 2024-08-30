@@ -71,7 +71,7 @@ function TableLayout(props) {
       <div className="text-center mt-5">
         {props.loggedIn && (
           <>
-            <div className="d-flex justify-content-between">
+            <div className="flex-row justify-content-between">
               <h1 className='my-2'>List of Reservations of {props.user.name}</h1>
             </div>
             <ReservationsTable 

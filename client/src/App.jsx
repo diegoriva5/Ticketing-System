@@ -63,7 +63,7 @@ function AppWithRouter(props) {
         setUser(user);
       } catch(err) {
         // NO need to do anything: user is simply not yet authenticated
-        //handleError(err);
+        // handleError(err);
       }
     };
     checkAuth();
@@ -74,6 +74,7 @@ function AppWithRouter(props) {
       const user = await API.logIn(credentials);
       setUser(user);
       setLoggedIn(true);
+      setExpandedConcertID(null);
     } catch (err) {
       // error is handled and visualized in the login form, do not manage error, throw it
       throw err;
@@ -152,8 +153,7 @@ function AppWithRouter(props) {
               theater={theater} setTheater={setTheater}
               occupied={occupied} setOccupied={setOccupied}
               selectedSeats={selectedSeats} onSeatClick={handleSeatClick}
-              reservationList={reservationList} setReservationList={setReservationList} />}
-               />
+              reservationList={reservationList} setReservationList={setReservationList} />}/>
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="*" element={<NotFoundLayout />} />
       </Route>
