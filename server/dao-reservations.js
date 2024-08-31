@@ -60,13 +60,27 @@ exports.getReservationsByUserID = (userID) => {
 // Check if all seats are available
 exports.checkSeatsAvailability = (concertID, seats) => {
     return new Promise((resolve, reject) => {
-        const placeholders = seats.map(() => '(?, ?)').join(', ');
+        // Parse seat strings to row and column format
+        const parsedSeats = seats.map(seat => {
+            return {
+                row: parseInt(seat.slice(0, -1), 10), // Extract and parse the row number
+                column: seat.slice(-1) // Extract the column letter
+            };
+        });
+
+        // Generate placeholders for the SQL query
+        const placeholders = parsedSeats.map(() => '(?, ?)').join(', ');
+        
+        // SQL query to check if any of the given seats are already reserved
         const sql = `SELECT row, column FROM reservations WHERE concert_id = ? AND (row, column) IN (${placeholders})`;
+        
+        // Prepare parameters for the query
+        const params = [concertID, ...parsedSeats.flatMap(seat => [seat.row, seat.column])];
 
-        const params = [concertID, ...seats.flatMap(seat => [seat.row, seat.column])];
-
+        // Execute the SQL query
         db.all(sql, params, (err, rows) => {
             if (err) {
+                console.error("SQL Error:", err);  // Debug: Print any SQL errors
                 reject(err);
                 return;
             }
@@ -81,6 +95,7 @@ exports.checkSeatsAvailability = (concertID, seats) => {
         });
     });
 };
+
 
 // Create reservations for the given seats
 exports.createReservations = async (concertID, seats, userID) => {

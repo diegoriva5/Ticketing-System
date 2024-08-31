@@ -106,6 +106,7 @@ function ConfirmationLayout(props) {
 
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(true);
+  const [seatsError, setSeatsError] = useState([]);
 
   // Simulate loading delay
   const simulateLoading = () => {
@@ -129,9 +130,13 @@ function ConfirmationLayout(props) {
       await API.confirmBooking(bookingData);
       alert('Booking confirmed!');
       setSelectedSeats([]); // Clear selected seats
-      navigate('/'); // Navigate back to the home page or wherever you want after confirmation
+      setExpandedConcertID(null);
+      navigate('/', { state: { reloadFromServer: true } }); // Navigate back to the home page or wherever you want after confirmation
     } catch (error) {
       alert('Booking failed. Please try again.');
+      setSeatsError(selectedSeats);
+      setSelectedSeats([]);
+      navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     }
   };
 
