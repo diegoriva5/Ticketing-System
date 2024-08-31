@@ -75,7 +75,11 @@ function TableLayout(props) {
             </div>
             <ReservationsTable 
               reservations={props.reservationList}
-              deleteReservation={props.deleteReservation} />
+              deleteReservation={props.deleteReservation}
+              onDeleteReservation={props.onDeleteReservation}
+              expandedConcertID={props.expandedConcertID}
+              setExpandedConcertID={props.setExpandedConcertID}
+               />
           </>
           
         )}

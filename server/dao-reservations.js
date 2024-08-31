@@ -83,36 +83,48 @@ exports.checkSeatsAvailability = (concertID, seats) => {
 };
 
 // Create reservations for the given seats
-exports.createReservations = (concertID, seats, userID) => {
-    return new Promise((resolve, reject) => {
+exports.createReservations = async (concertID, seats, userID) => {
+    try {
+        // Check if the seats are available first
+        const areSeatsAvailable = await exports.checkSeatsAvailability(concertID, seats);
+
+        if (!areSeatsAvailable) {
+            throw new Error('Some seats are already reserved');
+        }
+
+        console.log(areSeatsAvailable);
 
         // Define the SQL query
         const sql = "INSERT INTO reservations (concert_id, row, column, user_id) VALUES (?, ?, ?, ?)";
 
-        // Loop through each seat and perform the insertion
-        for (const seat of seats) {
-            // Parse seat string to row and column
+        // Use a Promise array to handle multiple async operations
+        const reservationPromises = seats.map(seat => {
             const row = parseInt(seat.slice(0, -1), 10);
             const column = seat.slice(-1);
 
-            // Execute SQL query for the current seat
-            db.run(sql, [concertID, row, column, userID], (err) => {
-                if (err) {
-                    reject(err);
-                }
+            return new Promise((resolve, reject) => {
+                db.run(sql, [concertID, row, column, userID], (err) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    resolve(true);
+                });
+            });
+        });
 
-                resolve(json); // All reservations were inserted successfully
-            }
-
-            );
-        }
-    });
+        // Wait for all insertions to complete
+        await Promise.all(reservationPromises);
+        return true; // All reservations were inserted successfully
+    } catch (err) {
+        throw err; // Rethrow the error for higher-level handling
+    }
 };
+
 
 // This function deletes an existing reservation given its id.
 exports.deleteReservation = (id) => {
     return new Promise((resolve, reject) => {
-      const sql = 'DELETE FROM reservations WHERE id = ?';
+      const sql = "DELETE FROM reservations WHERE reservation_id = ?";
       db.run(sql, [id], function (err) {
         if (err) {
           reject(err);

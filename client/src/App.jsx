@@ -139,13 +139,14 @@ function AppWithRouter(props) {
     }
   };
 
-  const deleteReservation = (reservationID) => {
-    // changes the state by passing a callback that will compute, from the old Array,
-    // a new Array where the filmId is not present anymore
-    //setFilmList(filmList => filmList.filter(e => e.id!==filmId));
-    API.deleteReservationByID(reservationID)
-      .then(()=> setDirty(true))
-      .catch(err=>handleErrors(err));
+  const handleDeleteReservation = async (reservationID) => {
+    try {
+      await API.deleteReservationByID(reservationID);
+      // Remove the reservation with the specified ID from the reservations array
+      setReservationList(prevReservations => prevReservations.filter(reservation => reservation.reservation_id !== reservationID));
+    } catch (err) {
+      handleErrors(err);
+    }
   }
 
 
@@ -164,7 +165,7 @@ function AppWithRouter(props) {
               selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
               onSeatClick={handleSeatClick}
               reservationList={reservationList} setReservationList={setReservationList}
-              deleteReservation={deleteReservation} />}/>
+              onDeleteReservation={handleDeleteReservation} />}/>
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="/confirmation" element={
             <ConfirmationLayout 

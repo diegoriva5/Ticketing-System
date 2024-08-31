@@ -6,7 +6,7 @@ import { TheaterSeats } from './TheaterSeats';
 import API from '../API.js';
 
 function ReservationsTable(props) {
-  const { reservations } = props;
+  const { reservations, onDeleteReservation } = props;
 
 
 
@@ -25,7 +25,9 @@ function ReservationsTable(props) {
                 <ReservationRow 
                     key={reservation.reservation_id} 
                     reservationData={reservation}
-                    deleteReservation={props.deleteReservation} />
+                    onDeleteReservation={onDeleteReservation}
+                    expandedConcertID={props.expandedConcertID}
+                    setExpandedConcertID={props.setExpandedConcertID} />
             ))}
         </tbody>
       </Table>
@@ -36,11 +38,11 @@ function ReservationRow(props) {
   const { reservationData } = props;
 
   const handleDeleteClick = () => {
-    props.deleteReservation(reservationData.reservation_id);
+    props.onDeleteReservation(reservationData.reservation_id);
+    props.setExpandedConcertID(null);
   };
 
-  const seat = reservationData.reservedRow + reservationData.reservedColumn;
-  /* Aggiungere l'onClick, e quindi l'onDelete al tasto per il delete (Lab10)*/ 
+  const seat = reservationData.reservedRow + reservationData.reservedColumn; 
   return (
       <>
         <tr>
@@ -55,7 +57,11 @@ function ReservationRow(props) {
               </td>
               <td className="justify-content-center align-items-center">
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                  <i className='bi bi-trash' onClick={handleDeleteClick}></i>
+                  <i 
+                    className='bi bi-trash' 
+                    onClick={handleDeleteClick}
+                    style={{ cursor: 'pointer' }}
+                  ></i>
                 </div>
               </td>
           </tr>
