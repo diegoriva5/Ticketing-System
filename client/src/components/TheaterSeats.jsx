@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Form, Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+
+import API from '../API';
 
 import '../App.css'; // Ensure CSS is imported
 
 function TheaterSeats(props) {
   const navigate = useNavigate();  
 
-  const { theater, occupied, selectedSeats, setSelectedSeats, onSeatClick, loggedIn } = props;
+  const { theater, occupied, selectedSeats, setSelectedSeats, 
+    onSeatClick, loggedIn, user, expandedConcertID, 
+    setExpandedConcertID, reloadTrigger, setReloadTrigger } = props;
   const [loading, setLoading] = useState(true);
   const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book
   
@@ -16,7 +20,7 @@ function TheaterSeats(props) {
   const simulateLoading = () => {
     setTimeout(() => {
       setLoading(false); // Update state to hide the loading message
-    }, 2000); // 2-second delay
+    }, 1000); // 1-second delay
   };
 
   // Call simulateLoading immediately to start the timer
@@ -74,36 +78,54 @@ function TheaterSeats(props) {
     }
   };
 
+
   // Handle confirmation of tickets
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (ticketCount > 0) {
       const newSelectedSeats = []; // Temporary array to store the seats to be booked
       let seatsNeeded = ticketCount; // Number of tickets needed
-  
+
       // Iterate over the seat grid to find available seats
       for (let rowIndex = 1; rowIndex <= theater.rows; rowIndex++) {
         for (let colIndex = 0; colIndex < theater.columns; colIndex++) {
           const seatRow = rowIndex;
           const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
-  
+
           // If the seat is not occupied and we still need seats, add it to the new selection
           if (!isSeatOccupied(seatRow, seatColumn) && !isSeatSelected(seatRow, seatColumn) && seatsNeeded > 0) {
             newSelectedSeats.push({ row: seatRow, column: seatColumn });
             seatsNeeded--;
           }
-  
+
           // If we've selected enough seats, break out of the loop
           if (seatsNeeded === 0) break;
         }
         if (seatsNeeded === 0) break;
       }
-  
+
       if (newSelectedSeats.length === ticketCount) {
         // Update the selected seats state directly
         setSelectedSeats([...selectedSeats, ...newSelectedSeats]);
-  
-        // Navigate to the confirmation page
-        navigate('/confirmation');
+
+        try {
+          const bookingData = {
+            concertID: expandedConcertID, // Use the concert ID from props
+            seats: newSelectedSeats.map(seat => `${seat.row}${seat.column}`),
+            userID: user.id // Use the user ID from props
+          };
+          await API.confirmBooking(bookingData);
+          alert('Booking successful!')
+          setSelectedSeats([]); // Clear selected seats after booking 
+          setExpandedConcertID(null);
+          setReloadTrigger(true);
+          navigate('/'); // Navigate back to the home page after confirmation
+        } catch (error) {
+          console.log(error);
+          alert('Booking failed. Please try again.');
+          setSelectedSeats([]); // Clear selected seats after failed booking
+          setExpandedConcertID(null);
+          navigate('/'); // Navigate back to the home page after failed confirmation
+        }
       } else {
         alert('Not enough available seats.');
       }

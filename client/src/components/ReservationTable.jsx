@@ -1,12 +1,30 @@
 import { Table, Form, Button, Dropdown, DropdownButton } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { TheaterSeats } from './TheaterSeats';
 
 import API from '../API.js';
 
 function ReservationsTable(props) {
-  const { reservations, onDeleteReservation } = props;
+  const { reservations, setReservations, onDeleteReservation, } = props;
+
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if the state is set to reload from the server
+    if (location.state && location.state.reloadFromServer) {
+      fetchReservations(); // Fetch the updated reservations
+    }
+  }, [location.state]);
+
+  const fetchReservations = async () => {
+    try {
+      const updatedReservations = await API.getReservationsOfUser(); // Replace with your API call
+      setReservations(updatedReservations); // Update the reservations state
+    } catch (error) {
+      console.error('Failed to fetch reservations:', error);
+    }
+  };
 
 
 
@@ -46,25 +64,25 @@ function ReservationRow(props) {
   return (
       <>
         <tr>
-              <td>
-                  <p>{reservationData.concertName}</p> 
-              </td>
-              <td>
-                  <p>{reservationData.theaterName}</p>
-              </td>
-              <td>
-                  <p>{seat}</p>
-              </td>
-              <td className="justify-content-center align-items-center">
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                  <i 
-                    className='bi bi-trash' 
-                    onClick={handleDeleteClick}
-                    style={{ cursor: 'pointer' }}
-                  ></i>
-                </div>
-              </td>
-          </tr>
+          <td>
+              <p>{reservationData.concertName}</p> 
+          </td>
+          <td>
+              <p>{reservationData.theaterName}</p>
+          </td>
+          <td>
+              <p>{seat}</p>
+          </td>
+          <td className="justify-content-center align-items-center">
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+              <i 
+                className='bi bi-trash' 
+                onClick={handleDeleteClick}
+                style={{ cursor: 'pointer' }}
+              ></i>
+            </div>
+          </td>
+        </tr>
       </>
   );
 }

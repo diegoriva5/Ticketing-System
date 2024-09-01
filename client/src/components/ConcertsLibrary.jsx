@@ -6,7 +6,9 @@ import { TheaterSeats } from './TheaterSeats';
 import API from '../API.js';
 
 function ConcertsTable(props) {
-  const { concerts, expandedConcertID, handleToggleSeats, theater, occupied, selectedSeats, setSelectedSeats, onSeatClick } = props;
+  const { concerts, expandedConcertID, handleToggleSeats, 
+    theater, occupied, selectedSeats, setSelectedSeats, 
+    onSeatClick, setExpandedConcertID, user, reloadTrigger, setReloadTrigger } = props;
 
   return (
       <Table className="table table-bordered table-striped table-hover w-100">
@@ -36,6 +38,10 @@ function ConcertsTable(props) {
                       occupied={occupied}
                       selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
                       onSeatClick={onSeatClick}
+                      user={user}
+                      expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
+                      reloadTrigger={reloadTrigger}
+                      setReloadTrigger={setReloadTrigger}
                   />
               ))}
           </tbody>
@@ -44,13 +50,14 @@ function ConcertsTable(props) {
 }
 
 function ConcertRow(props) {
-  const { concertData, isExpanded, onToggleSeats, loggedIn, theater, occupied, selectedSeats, setSelectedSeats, onSeatClick } = props;
+  const { concertData, isExpanded, onToggleSeats, 
+    loggedIn, theater, occupied, selectedSeats, 
+    setSelectedSeats, onSeatClick, user, expandedConcertID, 
+    setExpandedConcertID, reloadTrigger, setReloadTrigger } = props;
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
-      
         onToggleSeats(concertData.id, concertData.theater_id);
         // Selects which row (controlled by the concert.id) needs to be expanded
-      
   };
   
   /*
@@ -88,7 +95,10 @@ function ConcertRow(props) {
                         theater={theater} occupied={occupied}
                         selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
                         onSeatClick={onSeatClick}
-                        loggedIn={loggedIn} />
+                        loggedIn={loggedIn}
+                        user={user}
+                        expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
+                        reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger} />
                   </td>
                   
               </tr>

@@ -35,11 +35,15 @@ function LoginLayout(props) {
 }
   
 function TableLayout(props) {
-
+  // reloadTrigger: used to reload the list of the reservation of the user 
+  // when the automatic booking is performed
+  const [reloadTrigger, setReloadTrigger] = useState(true); 
   const location = useLocation();
+  
   let reloadFromServer = true;
   if (location.state)
     reloadFromServer = location.state.reloadFromServer;  
+  
 
   useEffect(() => {
     if (reloadFromServer) {
@@ -61,9 +65,9 @@ function TableLayout(props) {
           console.log(e);
         });
       }
-      
+      setReloadTrigger(false);
     }
-  }, [reloadFromServer]);
+  }, [reloadFromServer, reloadTrigger]);
   
   return (      // mt-5 lo mette più in basso
     <>
@@ -75,11 +79,13 @@ function TableLayout(props) {
             </div>
             <ReservationsTable 
               reservations={props.reservationList}
+              setReservations={props.setReservationList}
               deleteReservation={props.deleteReservation}
               onDeleteReservation={props.onDeleteReservation}
               expandedConcertID={props.expandedConcertID}
               setExpandedConcertID={props.setExpandedConcertID}
-               />
+              user={props.user}
+             />
           </>
           
         )}
@@ -91,22 +97,25 @@ function TableLayout(props) {
       </div>
       <ConcertsTable 
         concerts={props.concertList} loggedIn={props.loggedIn}
-        expandedConcertID={props.expandedConcertID} 
+        expandedConcertID={props.expandedConcertID} setExpandedConcertID={props.setExpandedConcertID}
         handleToggleSeats={props.handleToggleSeats}
         theater={props.theater} setTheater={props.setTheater}
         occupied={props.occupied} setOccupied={props.setOccupied}
         selectedSeats={props.selectedSeats} setSelectedSeats={props.setSelectedSeats}
-        onSeatClick={props.onSeatClick} />
+        onSeatClick={props.onSeatClick}
+        user={props.user}
+        reloadTrigger={reloadTrigger}
+        setReloadTrigger={setReloadTrigger} />
     </>
   );
 }
 
 function ConfirmationLayout(props) {
-  const { user, concertName, theaterName, selectedSeats, setSelectedSeats, expandedConcertID, setExpandedConcertID } = props;
+  const { user, concertName, theaterName, selectedSeats, 
+    setSelectedSeats, expandedConcertID, setExpandedConcertID } = props;
 
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(true);
-  const [seatsError, setSeatsError] = useState([]);
 
   // Simulate loading delay
   const simulateLoading = () => {
@@ -128,13 +137,12 @@ function ConfirmationLayout(props) {
         userID: user.id
       };
       await API.confirmBooking(bookingData);
-      alert('Booking confirmed!');
+      //alert('Booking confirmed!');
       setSelectedSeats([]); // Clear selected seats
       setExpandedConcertID(null);
-      navigate('/', { state: { reloadFromServer: true } }); // Navigate back to the home page or wherever you want after confirmation
+      navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     } catch (error) {
       alert('Booking failed. Please try again.');
-      setSeatsError(selectedSeats);
       setSelectedSeats([]);
       navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     }
