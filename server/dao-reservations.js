@@ -34,7 +34,7 @@ exports.getReservationByConcertID = (concertID) => {
 exports.getReservationsByUserID = (userID) => {
     return new Promise((resolve, reject) => {
         // SQL query to join reservations, concerts, and theaters tables
-        const sql = "SELECT reservations.reservation_id, concerts.name AS concert_name, theaters.name AS theater_name, reservations.row AS reserved_row, reservations.column AS reserved_column FROM reservations INNER JOIN concerts ON reservations.concert_id = concerts.id INNER JOIN theaters ON concerts.theater_id = theaters.id WHERE reservations.user_id = ?";
+        const sql = "SELECT reservations.reservation_id, concerts.name AS concert_name, theaters.name AS theater_name, reservations.row AS reserved_row, reservations.column AS reserved_column FROM reservations INNER JOIN concerts ON reservations.concert_id = concerts.id INNER JOIN theaters ON concerts.theater_id = theaters.id WHERE reservations.user_id = ? ORDER BY reservations.concert_id, reservations.row, reservations.column";
         
         // Execute the query
         db.all(sql, [userID], (err, rows) => {
@@ -80,17 +80,15 @@ exports.checkSeatsAvailability = (concertID, seats) => {
         // Execute the SQL query
         db.all(sql, params, (err, rows) => {
             if (err) {
-                console.error("SQL Error:", err);  // Debug: Print any SQL errors
                 reject(err);
                 return;
             }
 
             if (rows.length > 0) {
-                // Some seats are already reserved
-                resolve(false);
+                resolve(rows);
             } else {
                 // All seats are available
-                resolve(true);
+                resolve([]);
             }
         });
     });
@@ -103,7 +101,7 @@ exports.createReservations = async (concertID, seats, userID) => {
         // Check if the seats are available first
         const areSeatsAvailable = await exports.checkSeatsAvailability(concertID, seats);
 
-        if (!areSeatsAvailable) {
+        if (areSeatsAvailable.length != 0) {
             throw new Error('Some seats are already reserved');
         }
 

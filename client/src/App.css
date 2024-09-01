@@ -112,6 +112,12 @@
   cursor: not-allowed; /* Change cursor for unavailability */
 }
 
+.seat.unavailable {
+  background-color: rgb(34, 34, 245); /* Red for occupied seats */
+  border-color: blue;
+  cursor: not-allowed; /* Change cursor for unavailability */
+}
+
 .seat-recap {
   margin-top: 20px; /* Add space above recap section */
   text-align: center; /* Center align text */

@@ -14,7 +14,7 @@ function TheaterSeats(props) {
     setExpandedConcertID, reloadTrigger, setReloadTrigger } = props;
   const [loading, setLoading] = useState(true);
   const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book
-  
+  const [unavailableSeats, setUnavailableSeats] = useState([]);
 
   // Simulate loading delay
   const simulateLoading = () => {
@@ -47,6 +47,11 @@ function TheaterSeats(props) {
     return selectedSeats.some(seat => seat.row === row && seat.column === column);
   };
 
+  // Helper function to check if a seat has been booked during the booking phase
+  const isSeatUnavailable = (row, column) => {
+    return unavailableSeats.some(seat => seat.row === row && seat.column === column);
+  };
+
   // Generate seats grid
   const seats = Array.from({ length: theater.rows }, (_, rowIndex) => (
     <div key={rowIndex} className="seat-row">
@@ -55,7 +60,14 @@ function TheaterSeats(props) {
         const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
         const isOccupied = isSeatOccupied(seatRow, seatColumn);
         const isSelected = isSeatSelected(seatRow, seatColumn);
-        const seatClass = isOccupied ? 'seat occupied' : (isSelected && loggedIn) ? 'seat selected' : 'seat';
+        const isUnavailable = isSeatUnavailable(seatRow, seatColumn);
+        const seatClass = isUnavailable 
+          ? 'seat unavailable' 
+          : isOccupied 
+            ? 'seat occupied' 
+            : (isSelected && loggedIn) 
+              ? 'seat selected' 
+              : 'seat';
 
         return (
           <div
@@ -92,7 +104,7 @@ function TheaterSeats(props) {
           const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
 
           // If the seat is not occupied and we still need seats, add it to the new selection
-          if (!isSeatOccupied(seatRow, seatColumn) && !isSeatSelected(seatRow, seatColumn) && seatsNeeded > 0) {
+          if (!isSeatOccupied(seatRow, seatColumn) && seatsNeeded > 0) {
             newSelectedSeats.push({ row: seatRow, column: seatColumn });
             seatsNeeded--;
           }
@@ -113,12 +125,31 @@ function TheaterSeats(props) {
             seats: newSelectedSeats.map(seat => `${seat.row}${seat.column}`),
             userID: user.id // Use the user ID from props
           };
-          await API.confirmBooking(bookingData);
-          alert('Booking successful!')
-          setSelectedSeats([]); // Clear selected seats after booking 
-          setExpandedConcertID(null);
-          setReloadTrigger(true);
-          navigate('/'); // Navigate back to the home page after confirmation
+
+          const response = await API.confirmBooking(bookingData);
+
+          
+          if (response && response.error) {
+            // Show unavailable seats in blue
+            setUnavailableSeats(response.error.seats.map(seat => ({
+              row: seat.row,
+              column: seat.column
+            })));
+            setReloadTrigger(true);
+            console.log(unavailableSeats);
+            
+            setTimeout(() => {
+              setUnavailableSeats([]); // Clear the unavailable seats after 5 seconds
+            }, 5000);
+            setReloadTrigger(true);
+
+          } else {
+            alert('Booking successful!');
+            setSelectedSeats([]); // Clear selected seats after booking 
+            setExpandedConcertID(null);
+            setReloadTrigger(true);
+            navigate('/'); // Navigate back to the home page after confirmation
+          }
         } catch (error) {
           console.log(error);
           alert('Booking failed. Please try again.');

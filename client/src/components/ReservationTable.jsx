@@ -6,25 +6,8 @@ import { TheaterSeats } from './TheaterSeats';
 import API from '../API.js';
 
 function ReservationsTable(props) {
-  const { reservations, setReservations, onDeleteReservation, } = props;
+  const { reservations, onDeleteReservation, } = props;
 
-  const location = useLocation();
-
-  useEffect(() => {
-    // Check if the state is set to reload from the server
-    if (location.state && location.state.reloadFromServer) {
-      fetchReservations(); // Fetch the updated reservations
-    }
-  }, [location.state]);
-
-  const fetchReservations = async () => {
-    try {
-      const updatedReservations = await API.getReservationsOfUser(); // Replace with your API call
-      setReservations(updatedReservations); // Update the reservations state
-    } catch (error) {
-      console.error('Failed to fetch reservations:', error);
-    }
-  };
 
 
 

@@ -38,6 +38,7 @@ function TableLayout(props) {
   // reloadTrigger: used to reload the list of the reservation of the user 
   // when the automatic booking is performed
   const [reloadTrigger, setReloadTrigger] = useState(true); 
+  const [unavailableSeats, setUnavailableSeats] = useState([]);
   const location = useLocation();
   
   let reloadFromServer = true;
@@ -48,12 +49,12 @@ function TableLayout(props) {
   useEffect(() => {
     if (reloadFromServer) {
       API.getConcerts()
-      .then(concerts => {
-        props.setConcertList(concerts);
-      })
-      .catch(e => { 
-        console.log(e); 
-      }); 
+        .then(concerts => {
+          props.setConcertList(concerts);
+        })
+        .catch(e => { 
+          console.log(e); 
+        }); 
 
       
       if(props.loggedIn){
@@ -65,6 +66,7 @@ function TableLayout(props) {
           console.log(e);
         });
       }
+
       setReloadTrigger(false);
     }
   }, [reloadFromServer, reloadTrigger]);
@@ -105,7 +107,8 @@ function TableLayout(props) {
         onSeatClick={props.onSeatClick}
         user={props.user}
         reloadTrigger={reloadTrigger}
-        setReloadTrigger={setReloadTrigger} />
+        setReloadTrigger={setReloadTrigger}
+        unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats} />
     </>
   );
 }
