@@ -6,8 +6,29 @@ import { TheaterSeats } from './TheaterSeats';
 import API from '../API.js';
 
 function ReservationsTable(props) {
-  const { reservations, onDeleteReservation, } = props;
+  const { reservations, onDeleteReservation, user } = props;
 
+  // Group reservations by concert_id
+  const groupedReservations = {};
+
+  reservations.forEach((reservation) => {
+    const key = `${reservation.concert_id}`; // Unique key for each concert
+
+    if (!groupedReservations[key]) {
+      groupedReservations[key] = {
+        concert_id: reservation.concert_id,
+        concertName: reservation.concertName,
+        theaterName: reservation.theaterName,
+        seats: [],
+      };
+    }
+
+    // Add seat to the group
+    groupedReservations[key].seats.push(`${reservation.reservedRow}${reservation.reservedColumn}`);
+  });
+
+  // Convert groupedReservations object to an array for rendering
+  const groupedReservationsArray = Object.values(groupedReservations);
 
 
 
@@ -17,56 +38,50 @@ function ReservationsTable(props) {
                 <tr>
                     <th className="text-center">Concert</th>
                     <th className="text-center">Theater</th>
-                    <th className="text-center">Seat</th>
+                    <th className="text-center">Seats</th>
                     <th className="text-center">Click to delete</th>
                 </tr>
         </thead>
         <tbody>
-            {reservations.map((reservation) => (
-                <ReservationRow 
-                    key={reservation.reservation_id} 
-                    reservationData={reservation}
-                    onDeleteReservation={onDeleteReservation}
-                    expandedConcertID={props.expandedConcertID}
-                    setExpandedConcertID={props.setExpandedConcertID} />
-            ))}
+          {groupedReservationsArray.map((group) => (
+            <ReservationRow
+              key={group.concert_id} // Unique key based on concert ID
+              concertName={group.concertName}
+              theaterName={group.theaterName}
+              seats={group.seats}
+              concertID={group.concert_id}
+              onDeleteReservation={onDeleteReservation}
+              expandedConcertID={props.expandedConcertID}
+              setExpandedConcertID={props.setExpandedConcertID}
+              user={user}
+            />
+          ))}
         </tbody>
       </Table>
   );
 }
 
 function ReservationRow(props) {
-  const { reservationData } = props;
+  const { concertName, theaterName, seats, concertID, onDeleteReservation, setExpandedConcertID, user } = props;
 
   const handleDeleteClick = () => {
-    props.onDeleteReservation(reservationData.reservation_id);
-    props.setExpandedConcertID(null);
+    onDeleteReservation(concertID, user.id);
+    setExpandedConcertID(null);
   };
-
-  const seat = reservationData.reservedRow + reservationData.reservedColumn; 
+ 
   return (
-      <>
-        <tr>
-          <td>
-              <p>{reservationData.concertName}</p> 
-          </td>
-          <td>
-              <p>{reservationData.theaterName}</p>
-          </td>
-          <td>
-              <p>{seat}</p>
-          </td>
-          <td className="justify-content-center align-items-center">
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-              <i 
-                className='bi bi-trash' 
-                onClick={handleDeleteClick}
-                style={{ cursor: 'pointer' }}
-              ></i>
-            </div>
-          </td>
-        </tr>
-      </>
+    <tr>
+      <td className="text-center">{concertName}</td>
+      <td className="text-center">{theaterName}</td>
+      <td className="text-center">{seats.join(', ')}</td>
+      <td className="text-center">
+        <i
+          className="bi bi-trash"
+          onClick={handleDeleteClick}
+          style={{ cursor: 'pointer' }}
+        ></i>
+      </td>
+    </tr>
   );
 }
 

@@ -131,10 +131,10 @@ app.post('/api/create-reservations-entry',
 );
 
 // API to delete a reservation
-app.delete('/api/delete-reservation/:id',
+app.delete('/api/delete-reservation/:concertId/:userId',
   (req, res) => {
     
-    reservationsDao.deleteReservation(req.params.id)
+    reservationsDao.deleteReservation(req.params.concertId, req.params.userId)
       .then(result => res.status(200).json(result))
       .catch(err => res.status(500).json(err));
   }

@@ -126,30 +126,14 @@ function TheaterSeats(props) {
             userID: user.id // Use the user ID from props
           };
 
-          const response = await API.confirmBooking(bookingData);
-
+          await API.confirmBooking(bookingData);
+          setReloadTrigger(true);
           
-          if (response && response.error) {
-            // Show unavailable seats in blue
-            setUnavailableSeats(response.error.seats.map(seat => ({
-              row: seat.row,
-              column: seat.column
-            })));
-            setReloadTrigger(true);
-            console.log(unavailableSeats);
-            
-            setTimeout(() => {
-              setUnavailableSeats([]); // Clear the unavailable seats after 5 seconds
-            }, 5000);
-            setReloadTrigger(true);
+          alert('Booking successful!');
+          setSelectedSeats([]); // Clear selected seats after booking 
+          setExpandedConcertID(null);
+          navigate('/'); // Navigate back to the home page after confirmation
 
-          } else {
-            alert('Booking successful!');
-            setSelectedSeats([]); // Clear selected seats after booking 
-            setExpandedConcertID(null);
-            setReloadTrigger(true);
-            navigate('/'); // Navigate back to the home page after confirmation
-          }
         } catch (error) {
           console.log(error);
           alert('Booking failed. Please try again.');

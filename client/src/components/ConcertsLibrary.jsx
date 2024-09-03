@@ -7,7 +7,7 @@ import API from '../API.js';
 
 function ConcertsTable(props) {
   const { concerts, expandedConcertID, handleToggleSeats, 
-    theater, occupied, selectedSeats, setSelectedSeats, 
+    theater, occupied, setOccupied, selectedSeats, setSelectedSeats, 
     onSeatClick, setExpandedConcertID, user, reloadTrigger, setReloadTrigger,
     unavailableSeats, setUnavailableSeats } = props;
 
@@ -36,7 +36,7 @@ function ConcertsTable(props) {
                       onToggleSeats={handleToggleSeats} 
                       loggedIn={props.loggedIn}
                       theater={theater}
-                      occupied={occupied}
+                      occupied={occupied} setOccupied={setOccupied}
                       selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
                       onSeatClick={onSeatClick}
                       user={user}
@@ -53,10 +53,28 @@ function ConcertsTable(props) {
 
 function ConcertRow(props) {
   const { concertData, isExpanded, onToggleSeats, 
-    loggedIn, theater, occupied, selectedSeats, 
+    loggedIn, theater, occupied, setOccupied, selectedSeats, 
     setSelectedSeats, onSeatClick, user, expandedConcertID, 
     setExpandedConcertID, reloadTrigger, setReloadTrigger,
     unavailableSeats, setUnavailableSeats } = props;
+
+    let reloadFromServer = true;
+    if (location.state)
+        reloadFromServer = location.state.reloadFromServer;  
+
+
+    useEffect(() => {
+        // Fetch new reservations whenever `occupied` changes.
+        if (isExpanded) {
+          API.getReservations(concertData.id)
+            .then(reservations => {
+              setOccupied(reservations);
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        }
+      }, [occupied, isExpanded, concertData.id, setOccupied]);
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
         onToggleSeats(concertData.id, concertData.theater_id);

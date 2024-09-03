@@ -34,7 +34,7 @@ exports.getReservationByConcertID = (concertID) => {
 exports.getReservationsByUserID = (userID) => {
     return new Promise((resolve, reject) => {
         // SQL query to join reservations, concerts, and theaters tables
-        const sql = "SELECT reservations.reservation_id, concerts.name AS concert_name, theaters.name AS theater_name, reservations.row AS reserved_row, reservations.column AS reserved_column FROM reservations INNER JOIN concerts ON reservations.concert_id = concerts.id INNER JOIN theaters ON concerts.theater_id = theaters.id WHERE reservations.user_id = ? ORDER BY reservations.concert_id, reservations.row, reservations.column";
+        const sql = "SELECT reservations.concert_id, concerts.name AS concert_name, theaters.name AS theater_name, reservations.row AS reserved_row, reservations.column AS reserved_column FROM reservations INNER JOIN concerts ON reservations.concert_id = concerts.id INNER JOIN theaters ON concerts.theater_id = theaters.id WHERE reservations.user_id = ? ORDER BY reservations.concert_id, reservations.row, reservations.column";
         
         // Execute the query
         db.all(sql, [userID], (err, rows) => {
@@ -45,7 +45,7 @@ exports.getReservationsByUserID = (userID) => {
             
             // Map the result rows to the desired format
             const reservations = rows.map((row) => ({
-                reservation_id: row.reservation_id,
+                concert_id: row.concert_id,
                 concertName: row.concert_name,
                 theaterName: row.theater_name,
                 reservedRow: row.reserved_row,
@@ -135,10 +135,10 @@ exports.createReservations = async (concertID, seats, userID) => {
 
 
 // This function deletes an existing reservation given its id.
-exports.deleteReservation = (id) => {
+exports.deleteReservation = (concertID, userID) => {
     return new Promise((resolve, reject) => {
-      const sql = "DELETE FROM reservations WHERE reservation_id = ?";
-      db.run(sql, [id], function (err) {
+      const sql = "DELETE FROM reservations WHERE concert_id = ? AND user_id = ?";
+      db.run(sql, [concertID, userID], function (err) {
         if (err) {
           reject(err);
         } else

@@ -139,11 +139,11 @@ function AppWithRouter(props) {
     }
   };
 
-  const handleDeleteReservation = async (reservationID) => {
+  const handleDeleteReservation = async (concertID, userID) => {
     try {
-      await API.deleteReservationByID(reservationID);
+      await API.deleteReservationByID(concertID, userID);
       // Remove the reservation with the specified ID from the reservations array
-      setReservationList(prevReservations => prevReservations.filter(reservation => reservation.reservation_id !== reservationID));
+      setReservationList(prevReservations => prevReservations.filter(reservation => reservation.concert_id !== concertID));
     } catch (err) {
       handleErrors(err);
     }

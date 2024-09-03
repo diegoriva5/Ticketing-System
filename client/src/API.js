@@ -96,7 +96,7 @@ const getReservationsOfUser = async (userID) => {
   ).then( json => {
     return json.map((reservation) => {
       const reservationLine = {
-        reservation_id: reservation.reservation_id,
+        concert_id: reservation.concert_id,
         concertName: reservation.concertName,
         theaterName: reservation.theaterName,
         reservedRow: reservation.reservedRow,
@@ -120,9 +120,9 @@ const confirmBooking = async (bookingData) => {
 }
 
 /* API to delete a reseravation */
-const deleteReservationByID = async(reservationID) => {
+const deleteReservationByID = async(concertID, userID) => {
   return getJson(
-    fetch(SERVER_URL + "delete-reservation/" + reservationID, {
+    fetch(SERVER_URL + "delete-reservation/" + concertID + "/" + userID, {
       method: 'DELETE',
     })
   )

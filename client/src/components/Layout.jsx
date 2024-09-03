@@ -69,7 +69,7 @@ function TableLayout(props) {
 
       setReloadTrigger(false);
     }
-  }, [reloadFromServer, reloadTrigger]);
+  }, [reloadFromServer, reloadTrigger, props.setOccupied]);
   
   return (      // mt-5 lo mette più in basso
     <>
@@ -82,7 +82,6 @@ function TableLayout(props) {
             <ReservationsTable 
               reservations={props.reservationList}
               setReservations={props.setReservationList}
-              deleteReservation={props.deleteReservation}
               onDeleteReservation={props.onDeleteReservation}
               expandedConcertID={props.expandedConcertID}
               setExpandedConcertID={props.setExpandedConcertID}
@@ -140,12 +139,15 @@ function ConfirmationLayout(props) {
         userID: user.id
       };
       await API.confirmBooking(bookingData);
+
+      
       //alert('Booking confirmed!');
       setSelectedSeats([]); // Clear selected seats
       setExpandedConcertID(null);
       navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     } catch (error) {
-      alert('Booking failed. Please try again.');
+      alert('Booking failed. AAAAAAAAA.');
+      
       setSelectedSeats([]);
       navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     }
