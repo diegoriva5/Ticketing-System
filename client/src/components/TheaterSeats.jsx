@@ -9,9 +9,10 @@ import '../App.css'; // Ensure CSS is imported
 function TheaterSeats(props) {
   const navigate = useNavigate();  
 
-  const { theater, occupied, selectedSeats, setSelectedSeats, 
+  const { theater, occupied, setOccupied, selectedSeats, setSelectedSeats, 
     onSeatClick, loggedIn, user, expandedConcertID, 
-    setExpandedConcertID, reloadTrigger, setReloadTrigger } = props;
+    setExpandedConcertID, reloadTrigger, setReloadTrigger,
+    message, setMessage } = props;
   const [loading, setLoading] = useState(true);
   const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book
   const [unavailableSeats, setUnavailableSeats] = useState([]);
@@ -127,25 +128,31 @@ function TheaterSeats(props) {
           };
 
           await API.confirmBooking(bookingData);
-          setReloadTrigger(true);
+          setReloadTrigger(true);   //used to reload the user reservations' list
           
-          alert('Booking successful!');
-          setSelectedSeats([]); // Clear selected seats after booking 
-          setExpandedConcertID(null);
-          navigate('/'); // Navigate back to the home page after confirmation
+          // Fetch updated reservations to refresh the view
+          API.getReservations(expandedConcertID)
+            .then(reservations => {
+              setOccupied(reservations);
+              setSelectedSeats([]); // Clear selected seats
+              alert('Booking successful!');
+            })
+            .catch(e => {
+              console.error(e);
+              setMessage(e.message);
+            });
 
         } catch (error) {
-          console.log(error);
-          alert('Booking failed. Please try again.');
+          alert('Error. The reason will be displayed in red at the top of the page after pressing OK.');
+          setMessage(error.message);
           setSelectedSeats([]); // Clear selected seats after failed booking
-          setExpandedConcertID(null);
           navigate('/'); // Navigate back to the home page after failed confirmation
         }
       } else {
-        alert('Not enough available seats.');
+        setMessage('Not enough available seats.');
       }
     } else {
-      alert('Please select the number of tickets.');
+      setMessage('Please select the number of tickets.');
     }
   };
   
@@ -212,6 +219,7 @@ function TheaterSeats(props) {
               <p>Log-in if you want to book some seats!</p>
             </div>
           )}
+
             
         </>
       )}

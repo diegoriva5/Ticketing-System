@@ -69,7 +69,7 @@ function TableLayout(props) {
 
       setReloadTrigger(false);
     }
-  }, [reloadFromServer, reloadTrigger, props.setOccupied]);
+  }, [reloadFromServer, reloadTrigger]);
   
   return (      // mt-5 lo mette più in basso
     <>
@@ -77,7 +77,7 @@ function TableLayout(props) {
         {props.loggedIn && (
           <>
             <div className="flex-row justify-content-between">
-              <h1 className='my-2'>List of Reservations of {props.user.name}</h1>
+              <h1>List of Reservations of {props.user.name}</h1>
             </div>
             <ReservationsTable 
               reservations={props.reservationList}
@@ -107,14 +107,16 @@ function TableLayout(props) {
         user={props.user}
         reloadTrigger={reloadTrigger}
         setReloadTrigger={setReloadTrigger}
-        unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats} />
+        unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats}
+        message={props.message} setMessage={props.setMessage} />
     </>
   );
 }
 
 function ConfirmationLayout(props) {
   const { user, concertName, theaterName, selectedSeats, 
-    setSelectedSeats, expandedConcertID, setExpandedConcertID } = props;
+    setSelectedSeats, expandedConcertID, setExpandedConcertID,
+    message, setMessage } = props;
 
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(true);
@@ -141,13 +143,13 @@ function ConfirmationLayout(props) {
       await API.confirmBooking(bookingData);
 
       
-      //alert('Booking confirmed!');
+      alert('Booking confirmed!');
       setSelectedSeats([]); // Clear selected seats
       setExpandedConcertID(null);
       navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     } catch (error) {
-      alert('Booking failed. AAAAAAAAA.');
-      
+      alert('Error. The reason will be displayed in red at the top of the page after pressing OK.');
+      setMessage(error.message);
       setSelectedSeats([]);
       navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     }
@@ -195,7 +197,7 @@ function GenericLayout(props) {
           </Col>
       </Row>
 
-      <Row><Col>
+      <Row className='mt-5'><Col>
         {props.message? <Alert className='my-1' onClose={() => props.setMessage('')} variant='danger' dismissible>
           {props.message}</Alert> : null}
         {/* Alternative, with autohide

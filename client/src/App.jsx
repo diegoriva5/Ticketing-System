@@ -156,6 +156,7 @@ function AppWithRouter(props) {
                                   message={message} setMessage={setMessage}
                                   loggedIn={loggedIn} user={user} logout={handleLogout} />}>
           <Route index element={<TableLayout 
+              message={message} setMessage={setMessage}
               concertList={concertList} setConcertList={setConcertList}
               loggedIn={loggedIn} user={user}
               expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
@@ -165,7 +166,8 @@ function AppWithRouter(props) {
               selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
               onSeatClick={handleSeatClick}
               reservationList={reservationList} setReservationList={setReservationList}
-              onDeleteReservation={handleDeleteReservation} />}/>
+              onDeleteReservation={handleDeleteReservation}
+               />}/>
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="/confirmation" element={
             <ConfirmationLayout 
@@ -176,6 +178,7 @@ function AppWithRouter(props) {
               setSelectedSeats={setSelectedSeats}
               expandedConcertID={expandedConcertID} 
               setExpandedConcertID={setExpandedConcertID}
+              message={message} setMessage={setMessage}
             />
           } />
           <Route path="*" element={<NotFoundLayout />} />

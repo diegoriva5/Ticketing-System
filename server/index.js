@@ -125,7 +125,8 @@ app.post('/api/create-reservations-entry',
 
   reservationsDao.createReservations(concertID, seats, userID)
     .then(result => res.status(200).json(result))
-    .catch(err => { res.status(400).json(err);
+    .catch(err => { 
+      res.status(400).json({ error: err.message });
     });
   }
 );

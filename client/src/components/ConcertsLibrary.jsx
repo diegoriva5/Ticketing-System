@@ -9,7 +9,7 @@ function ConcertsTable(props) {
   const { concerts, expandedConcertID, handleToggleSeats, 
     theater, occupied, setOccupied, selectedSeats, setSelectedSeats, 
     onSeatClick, setExpandedConcertID, user, reloadTrigger, setReloadTrigger,
-    unavailableSeats, setUnavailableSeats } = props;
+    unavailableSeats, setUnavailableSeats, message, setMessage } = props;
 
   return (
       <Table className="table table-bordered table-striped table-hover w-100">
@@ -44,6 +44,7 @@ function ConcertsTable(props) {
                       reloadTrigger={reloadTrigger}
                       setReloadTrigger={setReloadTrigger}
                       unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats}
+                      message={message} setMessage={setMessage}
                   />
               ))}
           </tbody>
@@ -56,25 +57,8 @@ function ConcertRow(props) {
     loggedIn, theater, occupied, setOccupied, selectedSeats, 
     setSelectedSeats, onSeatClick, user, expandedConcertID, 
     setExpandedConcertID, reloadTrigger, setReloadTrigger,
-    unavailableSeats, setUnavailableSeats } = props;
+    unavailableSeats, setUnavailableSeats, message, setMessage } = props;
 
-    let reloadFromServer = true;
-    if (location.state)
-        reloadFromServer = location.state.reloadFromServer;  
-
-
-    useEffect(() => {
-        // Fetch new reservations whenever `occupied` changes.
-        if (isExpanded) {
-          API.getReservations(concertData.id)
-            .then(reservations => {
-              setOccupied(reservations);
-            })
-            .catch(e => {
-              console.log(e);
-            });
-        }
-      }, [occupied, isExpanded, concertData.id, setOccupied]);
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
         onToggleSeats(concertData.id, concertData.theater_id);
@@ -113,14 +97,16 @@ function ConcertRow(props) {
               <tr className="bg-danger text-white">
                   <td colSpan="3" className="text-center">
                       <TheaterSeats 
-                        theater={theater} occupied={occupied}
+                        theater={theater} 
+                        occupied={occupied} setOccupied={setOccupied}
                         selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
                         onSeatClick={onSeatClick}
                         loggedIn={loggedIn}
                         user={user}
                         expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
                         reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
-                        unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats} />
+                        unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats}
+                        message={message} setMessage={setMessage}/>
                   </td>
                   
               </tr>

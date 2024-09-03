@@ -57,6 +57,23 @@ exports.getReservationsByUserID = (userID) => {
     });
 };
 
+
+// Check if there's already a reservation by the current user on a certain concert
+exports.checkUserReservation = (concertID, userID) => {
+    return new Promise((resolve, reject) => {
+        const sql = "SELECT COUNT(*) AS count FROM reservations WHERE concert_id = ? AND user_id = ?";
+        
+        db.get(sql, [concertID, userID], (err, row) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(row.count > 0); // Resolve true if the user already has a reservation, false otherwise
+        });
+    });
+};
+
+
 // Check if all seats are available
 exports.checkSeatsAvailability = (concertID, seats) => {
     return new Promise((resolve, reject) => {
@@ -98,14 +115,20 @@ exports.checkSeatsAvailability = (concertID, seats) => {
 // Create reservations for the given seats
 exports.createReservations = async (concertID, seats, userID) => {
     try {
+        // Check if the user already has a reservation for this concert
+        const hasUserReservation = await exports.checkUserReservation(concertID, userID);
+
+        if (hasUserReservation) {
+            throw new Error('User already has a reservation for this concert.');
+        }
+
         // Check if the seats are available first
         const areSeatsAvailable = await exports.checkSeatsAvailability(concertID, seats);
 
         if (areSeatsAvailable.length != 0) {
-            throw new Error('Some seats are already reserved');
+            throw new Error('One or more selected seats were already reserved. Please try again.');
         }
 
-        console.log(areSeatsAvailable);
 
         // Define the SQL query
         const sql = "INSERT INTO reservations (concert_id, row, column, user_id) VALUES (?, ?, ?, ?)";
@@ -128,8 +151,8 @@ exports.createReservations = async (concertID, seats, userID) => {
         // Wait for all insertions to complete
         await Promise.all(reservationPromises);
         return true; // All reservations were inserted successfully
-    } catch (err) {
-        throw err; // Rethrow the error for higher-level handling
+    } catch (error) {
+        throw error; // Rethrow the error for higher-level handling
     }
 };
 
@@ -145,5 +168,5 @@ exports.deleteReservation = (concertID, userID) => {
           resolve(this.changes);
       });
     });
-  }
+}
 

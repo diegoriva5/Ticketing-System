@@ -109,15 +109,23 @@ const getReservationsOfUser = async (userID) => {
 
 /* API to confirm booking */
 const confirmBooking = async (bookingData) => {
-  return getJson(fetch(SERVER_URL + 'create-reservations-entry', {
+  const response = await fetch(SERVER_URL + 'create-reservations-entry', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     credentials: 'include',  // this parameter specifies that authentication cookie must be forwarded
     body: JSON.stringify(bookingData),
-  }));
+  });
+
+  if (!response.ok) {  // Check if the response status is not OK (200-299)
+    const errorData = await response.json();
+    throw new Error(errorData.error);  // Throw the error to be caught by the calling function
+  }
+
+  return await response.json(); // If successful, return the JSON response
 }
+
 
 /* API to delete a reseravation */
 const deleteReservationByID = async(concertID, userID) => {
