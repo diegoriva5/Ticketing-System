@@ -37,8 +37,6 @@ function LoginLayout(props) {
 function TableLayout(props) {
   // reloadTrigger: used to reload the list of the reservation of the user 
   // when the automatic booking is performed
-  const [reloadTrigger, setReloadTrigger] = useState(true); 
-  const [unavailableSeats, setUnavailableSeats] = useState([]);
   const location = useLocation();
   
   let reloadFromServer = true;
@@ -67,9 +65,9 @@ function TableLayout(props) {
         });
       }
 
-      setReloadTrigger(false);
+      props.setReloadTrigger(false);
     }
-  }, [reloadFromServer, reloadTrigger]);
+  }, [reloadFromServer, props.reloadTrigger]);
   
   return (      // mt-5 lo mette più in basso
     <>
@@ -105,21 +103,32 @@ function TableLayout(props) {
         selectedSeats={props.selectedSeats} setSelectedSeats={props.setSelectedSeats}
         onSeatClick={props.onSeatClick}
         user={props.user}
-        reloadTrigger={reloadTrigger}
-        setReloadTrigger={setReloadTrigger}
-        unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats}
-        message={props.message} setMessage={props.setMessage} />
+        reloadTrigger={props.reloadTrigger}
+        setReloadTrigger={props.setReloadTrigger}
+        message={props.message} setMessage={props.setMessage}
+        blueSeats={props.blueSeats} setBlueSeats={props.setBlueSeats} />
     </>
   );
 }
 
 function ConfirmationLayout(props) {
   const { user, concertName, theaterName, selectedSeats, 
-    setSelectedSeats, expandedConcertID, setExpandedConcertID,
-    message, setMessage } = props;
+    setSelectedSeats, occupied, setOccupied, expandedConcertID, setExpandedConcertID,
+    message, setMessage, reloadTrigger, setReloadTrigger,
+    blueSeats, setBlueSeats } = props;
 
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (blueSeats.length > 0) {
+      setTimeout(() => {
+        setBlueSeats([]);
+      }, 5000); //5-second delay
+      
+
+    }
+  }, [blueSeats]);
 
   // Simulate loading delay
   const simulateLoading = () => {
@@ -136,24 +145,57 @@ function ConfirmationLayout(props) {
   const handleConfirmBooking = async () => {
     try {
       const bookingData = {
-        concertID: expandedConcertID, // Assuming expandedConcertID is the concert ID
+        concertID: expandedConcertID,
         seats: selectedSeats.map(seat => `${seat.row}${seat.column}`),
         userID: user.id
       };
+  
       await API.confirmBooking(bookingData);
-
-      
+    
       alert('Booking confirmed!');
       setSelectedSeats([]); // Clear selected seats
       setExpandedConcertID(null);
       navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     } catch (error) {
-      alert('Error. The reason will be displayed in red at the top of the page after pressing OK.');
+      alert('Error. Some seats are already booked by another user. They will be displayed in blue for 5 seconds.');
+  
+      // Fetch unavailable seats to determine which ones need to be displayed in blue
+      const unavailableSeats = await API.checkSeatIsAvailable(expandedConcertID, selectedSeats);
+      
+      // Extract the rows and columns of unavailable seats
+      const blueSeats = unavailableSeats.map(seat => `${seat.row}${seat.column}`);
+      
+      console.log("Blue seats to be displayed:", blueSeats);
+  
+      // Update state to display blue seats
+      setBlueSeats(blueSeats);
+  
+      // Clear blueSeats state after 5 seconds
+      setTimeout(() => {
+        setBlueSeats([]); // Ensure this function is called to clear the state
+        console.log("Blue seats cleared after 5 seconds");
+      }, 5000);
+  
+      // Fetch reservations and update state
+      API.getReservations(expandedConcertID)
+        .then(reservations => {
+          setOccupied(reservations);
+          setSelectedSeats([]); // Clear selected seats after updating reservations
+        })
+        .catch(e => {
+          console.error(e);
+          setMessage(e.message);
+        });
+  
+      // Update message with error information
       setMessage(error.message);
-      setSelectedSeats([]);
-      navigate('/'); // Navigate back to the home page or wherever you want after confirmation
+      navigate('/');
     }
   };
+  
+  
+  
+  
 
   const handleBack = () => {
     setSelectedSeats([]);

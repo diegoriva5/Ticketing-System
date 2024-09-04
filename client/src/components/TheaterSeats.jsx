@@ -12,10 +12,21 @@ function TheaterSeats(props) {
   const { theater, occupied, setOccupied, selectedSeats, setSelectedSeats, 
     onSeatClick, loggedIn, user, expandedConcertID, 
     setExpandedConcertID, reloadTrigger, setReloadTrigger,
-    message, setMessage } = props;
+    message, setMessage, blueSeats, setBlueSeats } = props;
   const [loading, setLoading] = useState(true);
   const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book
-  const [unavailableSeats, setUnavailableSeats] = useState([]);
+  
+  useEffect(() => {
+    if (blueSeats.length > 0) {
+      // Reset blue seats after 5 seconds
+      const timer = setTimeout(() => {
+        setBlueSeats([]);
+      }, 5000);
+
+      // Cleanup timer on component unmount
+      return () => clearTimeout(timer);
+    }
+  }, [blueSeats]);
 
   // Simulate loading delay
   const simulateLoading = () => {
@@ -49,9 +60,7 @@ function TheaterSeats(props) {
   };
 
   // Helper function to check if a seat has been booked during the booking phase
-  const isSeatUnavailable = (row, column) => {
-    return unavailableSeats.some(seat => seat.row === row && seat.column === column);
-  };
+  const isSeatBlue = (row, column) => blueSeats.includes(`${row}${column}`);
 
   // Generate seats grid
   const seats = Array.from({ length: theater.rows }, (_, rowIndex) => (
@@ -61,9 +70,9 @@ function TheaterSeats(props) {
         const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
         const isOccupied = isSeatOccupied(seatRow, seatColumn);
         const isSelected = isSeatSelected(seatRow, seatColumn);
-        const isUnavailable = isSeatUnavailable(seatRow, seatColumn);
-        const seatClass = isUnavailable 
-          ? 'seat unavailable' 
+        const isBlue = isSeatBlue(seatRow, seatColumn);
+        const seatClass = isBlue 
+          ? 'seat blue' 
           : isOccupied 
             ? 'seat occupied' 
             : (isSelected && loggedIn) 

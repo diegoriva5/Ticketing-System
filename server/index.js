@@ -118,6 +118,14 @@ app.get('/api/reservationOfUser/:userId',
   }
 );
 
+app.get('/api/is-seat-available/:concertID/:row/:column',
+  (req, res) => {
+    reservationsDao.isSeatAvailable(req.params.concertID, req.params.row, req.params.column)
+    .then(seats => res.json(seats))
+    .catch(err => res.status(500).json(err));
+  }
+)
+
 // API to confirm booking and create reservations
 app.post('/api/create-reservations-entry',
   (req, res) => {

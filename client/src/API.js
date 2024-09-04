@@ -136,6 +136,37 @@ const deleteReservationByID = async(concertID, userID) => {
   )
 }
 
+const checkSeatIsAvailable = async(concertID, selectedSeats) => {
+  const urls = selectedSeats.map(seat => {
+    return `${SERVER_URL}is-seat-available/${concertID}/${seat.row}/${seat.column}`;
+  });
+
+  try {
+    const responses = await Promise.all(urls.map(url => fetch(url, { credentials: 'include' })));
+
+    responses.forEach((res, index) => {
+      console.log(`Response status for request ${index}: ${res.status}`);
+      if (!res.ok) {
+        console.error(`Request ${index} failed with status: ${res.status}`);
+      }
+    });
+
+    const occupiedSeatsResults = await Promise.all(responses.map(res => res.json()));
+    console.log('Occupied Seats Results:', occupiedSeatsResults);
+
+    const occupiedSeats = occupiedSeatsResults.filter(result => result != null);
+    console.log('Filtered Occupied Seats:', occupiedSeats);
+
+    return occupiedSeats;
+  
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+};
+
+
+
 
 /*** Authentication functions ***/
 
@@ -179,6 +210,6 @@ const logOut = async() => {
 }
 
   
-const API = { getConcerts, getTheaterInfo, getReservations, getReservationsOfUser, confirmBooking, deleteReservationByID, logIn, getUserInfo, logOut };
+const API = { getConcerts, getTheaterInfo, getReservations, getReservationsOfUser, confirmBooking, deleteReservationByID, checkSeatIsAvailable, logIn, getUserInfo, logOut };
 
 export default API;

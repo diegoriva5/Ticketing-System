@@ -29,9 +29,11 @@ function AppWithRouter(props) {
   const [theater, setTheater] = useState(null);
   const [expandedConcertID, setExpandedConcertID] = useState(null);
   const [occupied, setOccupied] = useState([]);
+  const [blueSeats, setBlueSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [reservationList, setReservationList] = useState([]);
 
+  const [reloadTrigger, setReloadTrigger] = useState(true); 
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
 
@@ -167,6 +169,8 @@ function AppWithRouter(props) {
               onSeatClick={handleSeatClick}
               reservationList={reservationList} setReservationList={setReservationList}
               onDeleteReservation={handleDeleteReservation}
+              blueSeats={blueSeats} setBlueSeats={setBlueSeats}
+              reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
                />}/>
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="/confirmation" element={
@@ -174,11 +178,15 @@ function AppWithRouter(props) {
               user={user}
               concertName={concertList.find(concert => concert.id === expandedConcertID)?.name}
               theaterName={theater?.name}
+              occupied={occupied} setOccupied={setOccupied}
               selectedSeats={selectedSeats} 
               setSelectedSeats={setSelectedSeats}
               expandedConcertID={expandedConcertID} 
               setExpandedConcertID={setExpandedConcertID}
               message={message} setMessage={setMessage}
+              blueSeats={blueSeats} setBlueSeats={setBlueSeats}
+
+              reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
             />
           } />
           <Route path="*" element={<NotFoundLayout />} />

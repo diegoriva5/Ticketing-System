@@ -156,6 +156,33 @@ exports.createReservations = async (concertID, seats, userID) => {
     }
 };
 
+// Check if all seats are available
+exports.isSeatAvailable = (concertID, row, column) => {
+    return new Promise((resolve, reject) => {
+        // Parse seat strings to row and column format
+        
+        
+        // SQL query to check if any of the given seats are already reserved
+        const sql = "SELECT row, column FROM reservations WHERE concert_id = ? AND row = ? AND column = ?";
+        
+
+        // Execute the SQL query
+        db.get(sql, [concertID, row, column], (err, row) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            if (row != undefined) {
+                resolve(row);
+            } else {
+                // All seats are available
+                resolve(null);
+            }
+        });
+    });
+};
+
 
 // This function deletes an existing reservation given its id.
 exports.deleteReservation = (concertID, userID) => {

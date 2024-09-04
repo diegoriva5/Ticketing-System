@@ -9,7 +9,8 @@ function ConcertsTable(props) {
   const { concerts, expandedConcertID, handleToggleSeats, 
     theater, occupied, setOccupied, selectedSeats, setSelectedSeats, 
     onSeatClick, setExpandedConcertID, user, reloadTrigger, setReloadTrigger,
-    unavailableSeats, setUnavailableSeats, message, setMessage } = props;
+    unavailableSeats, setUnavailableSeats, message, setMessage, 
+    blueSeats, setBlueSeats } = props;
 
   return (
       <Table className="table table-bordered table-striped table-hover w-100">
@@ -45,6 +46,7 @@ function ConcertsTable(props) {
                       setReloadTrigger={setReloadTrigger}
                       unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats}
                       message={message} setMessage={setMessage}
+                      blueSeats={blueSeats} setBlueSeats={setBlueSeats}
                   />
               ))}
           </tbody>
@@ -57,7 +59,8 @@ function ConcertRow(props) {
     loggedIn, theater, occupied, setOccupied, selectedSeats, 
     setSelectedSeats, onSeatClick, user, expandedConcertID, 
     setExpandedConcertID, reloadTrigger, setReloadTrigger,
-    unavailableSeats, setUnavailableSeats, message, setMessage } = props;
+    unavailableSeats, setUnavailableSeats, message, setMessage,
+    blueSeats, setBlueSeats } = props;
 
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
@@ -106,7 +109,8 @@ function ConcertRow(props) {
                         expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
                         reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
                         unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats}
-                        message={message} setMessage={setMessage}/>
+                        message={message} setMessage={setMessage}
+                        blueSeats={blueSeats} setBlueSeats={setBlueSeats} />
                   </td>
                   
               </tr>
