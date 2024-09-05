@@ -94,7 +94,7 @@ app.get('/api/list-concerts',
 );
 
 /*** Theaters APIs ***/
-app.get('/api/get-theater-info/:id',
+app.get('/api/get-theater-info/:id', 
   (req, res) => {
     theatersDao.getInfo(req.params.id)
     .then(theaters => res.json(theaters))
@@ -110,15 +110,18 @@ app.get('/api/reservation/:concertId',
     .catch(err => res.status(500).json(err));
 });
 
-app.get('/api/reservationOfUser/:userId', 
+app.get('/api/reservationOfUser/:userId', isLoggedIn, 
   (req, res) => {
-    reservationsDao.getReservationsByUserID(req.params.userId)
+    if(req.params.userId != req.user.id){
+      return res.status(400).json('UserID from client differs from the id of the logged in user');
+    }
+    reservationsDao.getReservationsByUserID(req.user.id)
     .then(reservations => res.json(reservations))
     .catch(err => res.status(500).json(err));
   }
 );
 
-app.get('/api/is-seat-available/:concertID/:row/:column',
+app.get('/api/is-seat-available/:concertID/:row/:column', isLoggedIn, 
   (req, res) => {
     reservationsDao.isSeatAvailable(req.params.concertID, req.params.row, req.params.column)
     .then(seats => res.json(seats))
@@ -127,11 +130,13 @@ app.get('/api/is-seat-available/:concertID/:row/:column',
 )
 
 // API to confirm booking and create reservations
-app.post('/api/create-reservations-entry',
+app.post('/api/create-reservations-entry', isLoggedIn, 
   (req, res) => {
   const { concertID, seats, userID } = req.body;
-
-  reservationsDao.createReservations(concertID, seats, userID)
+  if( userID != req.user.id ){
+    return res.status(400).json('UserID from client differs from the id of the logged in user');
+  }
+  reservationsDao.createReservations(concertID, seats, req.user.id)
     .then(result => res.status(200).json(result))
     .catch(err => { 
       res.status(400).json({ error: err.message });
@@ -140,10 +145,12 @@ app.post('/api/create-reservations-entry',
 );
 
 // API to delete a reservation
-app.delete('/api/delete-reservation/:concertId/:userId',
+app.delete('/api/delete-reservation/:concertId/:userId', isLoggedIn,
   (req, res) => {
-    
-    reservationsDao.deleteReservation(req.params.concertId, req.params.userId)
+    if(req.params.userId != req.user.id){
+      return res.status(400).json('UserID from client differs from the id of the logged in user');
+    }
+    reservationsDao.deleteReservation(req.params.concertId, req.user.id)
       .then(result => res.status(200).json(result))
       .catch(err => res.status(500).json(err));
   }
