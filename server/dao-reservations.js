@@ -126,7 +126,7 @@ exports.createReservations = async (concertID, seats, userID) => {
         const areSeatsAvailable = await exports.checkSeatsAvailability(concertID, seats);
 
         if (areSeatsAvailable.length != 0) {
-            throw new Error('One or more selected seats were already reserved. Please try again.');
+            throw new Error('One or more selected seats, colored in blue, were already reserved. Please try again.');
         }
 
 

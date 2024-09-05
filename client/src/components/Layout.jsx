@@ -120,15 +120,6 @@ function ConfirmationLayout(props) {
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (blueSeats.length > 0) {
-      setTimeout(() => {
-        setBlueSeats([]);
-      }, 5000); //5-second delay
-      
-
-    }
-  }, [blueSeats]);
 
   // Simulate loading delay
   const simulateLoading = () => {
@@ -157,7 +148,7 @@ function ConfirmationLayout(props) {
       setExpandedConcertID(null);
       navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     } catch (error) {
-      alert('Error. Some seats are already booked by another user. They will be displayed in blue for 5 seconds.');
+      alert('Error. The cause is displayed on top of the page.');
   
       // Fetch unavailable seats to determine which ones need to be displayed in blue
       const unavailableSeats = await API.checkSeatIsAvailable(expandedConcertID, selectedSeats);
@@ -165,7 +156,6 @@ function ConfirmationLayout(props) {
       // Extract the rows and columns of unavailable seats
       const blueSeats = unavailableSeats.map(seat => `${seat.row}${seat.column}`);
       
-      console.log("Blue seats to be displayed:", blueSeats);
   
       // Update state to display blue seats
       setBlueSeats(blueSeats);
@@ -173,8 +163,7 @@ function ConfirmationLayout(props) {
       // Clear blueSeats state after 5 seconds
       setTimeout(() => {
         setBlueSeats([]); // Ensure this function is called to clear the state
-        console.log("Blue seats cleared after 5 seconds");
-      }, 5000);
+      }, 7000);   /* 5000 + 2000 of loading */
   
       // Fetch reservations and update state
       API.getReservations(expandedConcertID)

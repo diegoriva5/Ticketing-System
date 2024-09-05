@@ -33,7 +33,7 @@ function ReservationsTable(props) {
 
 
   return (
-      <Table className="table table-bordered table-striped table-hover w-100">
+      <Table className="table table-bordered table-striped table-hover w-100 custom-table">
         <thead>
                 <tr>
                     <th className="text-center">Concert</th>

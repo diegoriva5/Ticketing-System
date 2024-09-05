@@ -16,23 +16,12 @@ function TheaterSeats(props) {
   const [loading, setLoading] = useState(true);
   const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book
   
-  useEffect(() => {
-    if (blueSeats.length > 0) {
-      // Reset blue seats after 5 seconds
-      const timer = setTimeout(() => {
-        setBlueSeats([]);
-      }, 5000);
-
-      // Cleanup timer on component unmount
-      return () => clearTimeout(timer);
-    }
-  }, [blueSeats]);
 
   // Simulate loading delay
   const simulateLoading = () => {
     setTimeout(() => {
       setLoading(false); // Update state to hide the loading message
-    }, 1000); // 1-second delay
+    }, 2000); // 1-second delay
   };
 
   // Call simulateLoading immediately to start the timer
@@ -164,14 +153,19 @@ function TheaterSeats(props) {
       setMessage('Please select the number of tickets.');
     }
   };
-  
 
+  
+  /* visually-hidden hides the message visually but will be annouced to screen readers */
   return (
     <div className="theater-seats">
       {loading ? (
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading seats...</span>
+        <div className="d-flex flex-column align-items-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading seats...</span>
+          </div>
+          <div className="mt-2 text-primary">Loading seats...</div>
         </div>
+      
       ) : (
         <>
           <div className="stage">Stage</div>
