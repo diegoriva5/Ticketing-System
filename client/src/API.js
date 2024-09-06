@@ -92,7 +92,9 @@ const getReservations = async (concertID) => {
 
 const getReservationsOfUser = async (userID) => {
   return getJson(
-    fetch(SERVER_URL + 'reservationOfUser/' + userID)
+    fetch(SERVER_URL + 'reservationOfUser/' + userID, {
+      credentials: 'include',
+    })
   ).then( json => {
     return json.map((reservation) => {
       const reservationLine = {
@@ -132,6 +134,7 @@ const deleteReservationByID = async(concertID, userID) => {
   return getJson(
     fetch(SERVER_URL + "delete-reservation/" + concertID + "/" + userID, {
       method: 'DELETE',
+      credentials: 'include'
     })
   )
 }
@@ -192,7 +195,7 @@ const logIn = async (credentials) => {
  */
 const getUserInfo = async () => {
   return getJson(fetch(SERVER_URL + 'sessions/current', {
-    // this parameter specifies that authentication cookie must be forwared
+    // this parameter specifies that authentication cookie must be forwarded
     credentials: 'include'
   })
   )
@@ -209,7 +212,14 @@ const logOut = async() => {
   )
 }
 
+async function getAuthToken() {
+  return getJson(fetch(SERVER_URL + 'auth-token', {
+    // this parameter specifies that authentication cookie must be forwared
+    credentials: 'include'
+  })
+  )
+}
   
-const API = { getConcerts, getTheaterInfo, getReservations, getReservationsOfUser, confirmBooking, deleteReservationByID, checkSeatIsAvailable, logIn, getUserInfo, logOut };
+const API = { getConcerts, getTheaterInfo, getReservations, getReservationsOfUser, confirmBooking, deleteReservationByID, checkSeatIsAvailable, logIn, getUserInfo, logOut, getAuthToken };
 
 export default API;

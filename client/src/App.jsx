@@ -37,6 +37,8 @@ function AppWithRouter(props) {
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
 
+  const [authToken, setAuthToken] = useState(undefined);
+
   // If an error occurs, the error message will be shown in a toast.
   const handleErrors = (err) => {
     console.log('DEBUG: err: '+JSON.stringify(err));
@@ -56,6 +58,12 @@ function AppWithRouter(props) {
     setTimeout( ()=> setDirty(true), 2000);
   }
 
+
+  const renewToken = () => {
+    API.getAuthToken().then((resp) => { setAuthToken(resp.token); } )
+    .catch(err => {console.log("DEBUG: renewToken err: ",err)});
+  }
+
   useEffect(()=> {
     const checkAuth = async() => {
       try {
@@ -63,12 +71,14 @@ function AppWithRouter(props) {
         const user = await API.getUserInfo();
         setLoggedIn(true);
         setUser(user);
+        API.getAuthToken().then((resp) => { setAuthToken(resp.token); })
       } catch(err) {
         // NO need to do anything: user is simply not yet authenticated
-        // handleError(err);
+        //handleError(err);
       }
     };
     checkAuth();
+
   }, []);  // The useEffect callback is called only the first time the component is mounted.
 
   const handleLogin = async (credentials) => {
@@ -76,6 +86,7 @@ function AppWithRouter(props) {
       const user = await API.logIn(credentials);
       setUser(user);
       setLoggedIn(true);
+      renewToken();
       setExpandedConcertID(null);
     } catch (err) {
       // error is handled and visualized in the login form, do not manage error, throw it
@@ -91,6 +102,7 @@ function AppWithRouter(props) {
     setLoggedIn(false);
     // clean up everything
     setUser(null);
+    setAuthToken(undefined);
     setExpandedConcertID(null);
     navigate("/");
   };

@@ -54,7 +54,6 @@ function TableLayout(props) {
           console.log(e); 
         }); 
 
-      
       if(props.loggedIn){
         API.getReservationsOfUser(props.user.id)
         .then(reservations => {

@@ -4,6 +4,11 @@ const morgan = require('morgan');                                  // logging mi
 const { check, validationResult, oneOf } = require('express-validator'); // validation middleware
 const cors = require('cors');
 
+const jsonwebtoken = require('jsonwebtoken');
+
+const jwtSecret = 'qTX6walIEr47p7iXtTgLxDTXJRZYDC9egFjGLIn0rRiahB4T24T4d5f59CtyQmH8';
+const expireTime = 60; //seconds
+
 const concertsDao = require('./dao-concerts');
 const userDao = require('./dao-users');
 const theatersDao = require('./dao-theaters');
@@ -11,6 +16,7 @@ const reservationsDao = require('./dao-reservations');
 
 /*** init express and set-up the middlewares ***/
 const app = express();
+
 app.use(morgan('dev'));
 app.use(express.json());
 
@@ -27,6 +33,9 @@ app.use(cors(corsOptions));
 const passport = require('passport');                              // authentication middleware
 const LocalStrategy = require('passport-local');                   // authentication strategy (username and password)
 
+/** Set up authentication strategy to search in the DB a user with a matching password.
+ * The user object will contain other information extracted by the method userDao.getUser (i.e., id, username, name).
+ **/
 passport.use(new LocalStrategy(async function verify(username, password, callback) {
   const user = await userDao.getUser(username, password)
   if(!user)
@@ -72,6 +81,7 @@ const isLoggedIn = (req, res, next) => {
 
 
 
+
 /*** Utility Functions ***/
 
 // Make sure to set a reasonable value (not too small!) depending on the application constraints
@@ -85,7 +95,7 @@ const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
 };
 
 /*** Concerts APIs ***/
-app.get('/api/list-concerts', 
+app.get('/api/list-concerts',  
   (req, res) => {
     concertsDao.listConcerts()
     .then(concerts => res.json(concerts))
@@ -110,18 +120,15 @@ app.get('/api/reservation/:concertId',
     .catch(err => res.status(500).json(err));
 });
 
-app.get('/api/reservationOfUser/:userId', isLoggedIn, 
+app.get('/api/reservationOfUser/:userId', isLoggedIn,
   (req, res) => {
-    if(req.params.userId != req.user.id){
-      return res.status(400).json('UserID from client differs from the id of the logged in user');
-    }
     reservationsDao.getReservationsByUserID(req.user.id)
     .then(reservations => res.json(reservations))
     .catch(err => res.status(500).json(err));
   }
 );
 
-app.get('/api/is-seat-available/:concertID/:row/:column', isLoggedIn, 
+app.get('/api/is-seat-available/:concertID/:row/:column', 
   (req, res) => {
     reservationsDao.isSeatAvailable(req.params.concertID, req.params.row, req.params.column)
     .then(seats => res.json(seats))
@@ -133,9 +140,6 @@ app.get('/api/is-seat-available/:concertID/:row/:column', isLoggedIn,
 app.post('/api/create-reservations-entry', isLoggedIn, 
   (req, res) => {
   const { concertID, seats, userID } = req.body;
-  if( userID != req.user.id ){
-    return res.status(400).json('UserID from client differs from the id of the logged in user');
-  }
   reservationsDao.createReservations(concertID, seats, req.user.id)
     .then(result => res.status(200).json(result))
     .catch(err => { 
@@ -147,9 +151,6 @@ app.post('/api/create-reservations-entry', isLoggedIn,
 // API to delete a reservation
 app.delete('/api/delete-reservation/:concertId/:userId', isLoggedIn,
   (req, res) => {
-    if(req.params.userId != req.user.id){
-      return res.status(400).json('UserID from client differs from the id of the logged in user');
-    }
     reservationsDao.deleteReservation(req.params.concertId, req.user.id)
       .then(result => res.status(200).json(result))
       .catch(err => res.status(500).json(err));
@@ -199,6 +200,17 @@ app.delete('/api/sessions/current', (req, res) => {
   });
 });
 
+/*** Token ***/
+
+// GET /api/auth-token
+app.get('/api/auth-token', isLoggedIn, (req, res) => {
+  let authLevel = req.user.level;
+
+  const payloadToSign = { access: authLevel, authId: 1234 };
+  const jwtToken = jsonwebtoken.sign(payloadToSign, jwtSecret, {expiresIn: expireTime});
+
+  res.json({token: jwtToken, authLevel: authLevel});  // authLevel is just for debug. Anyway it is in the JWT payload
+});
 
 
 
