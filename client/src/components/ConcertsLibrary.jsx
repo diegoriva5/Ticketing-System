@@ -13,11 +13,11 @@ function ConcertsTable(props) {
     blueSeats, setBlueSeats } = props;
 
   return (
-      <Table className="table table-bordered table-striped table-hover w-100">
-          <thead>
+      <Table className="custom-concerts-table w-100">
+          <thead className="bg-gradient text-white">
               <tr>
-                  <th className="text-center">Concert</th>
-                  <th className="text-center">Theater</th>
+                  <th className="text-center align-middle">Concert</th>
+                  <th className="text-center align-middle">Theater</th>
                   <th className="bi bi-ui-checks-grid"></th>
               </tr>
           </thead>
@@ -83,35 +83,43 @@ function ConcertRow(props) {
 
   return (
       <>
-          <tr>
-              <td>
-                  <p>{concertData.name}</p> 
+            <tr className="bg-dark text-light custom-row" 
+                style={{ transition: "background-color 0.3s ease" }} 
+            >
+              <td className="align-middle text-center">
+                  <p className="m-0 font-weight-bold">{concertData.name}</p> 
               </td>
-              <td>
-                  <p>{concertData.theater_name}</p>
+              <td className="align-middle text-center">
+                  <p className="m-0">{concertData.theater_name}</p>
               </td>
-              <td className="text-center">
-                <Button variant="primary" onClick={toggleSeats}>
+              <td className="align-middle text-center">
+                <Button 
+                    variant="primary" 
+                    onClick={toggleSeats} 
+                    className="btn-lg" 
+                    style={{ borderRadius: "30px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)"}}
+                >
                     {isExpanded ? 'Hide seats ▲' : 'Show seats'}
                 </Button>   
               </td>
           </tr>
           {isExpanded && theater && (
-              <tr className="bg-danger text-white">
-                  <td colSpan="3" className="text-center">
-                      <TheaterSeats 
-                        theater={theater} 
-                        occupied={occupied} setOccupied={setOccupied}
-                        selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
-                        onSeatClick={onSeatClick}
-                        loggedIn={loggedIn}
-                        user={user}
-                        expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
-                        reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
-                        unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats}
-                        message={message} setMessage={setMessage}
-                        blueSeats={blueSeats} setBlueSeats={setBlueSeats} />
-                  </td>
+              <tr>
+                    <td colSpan="3" className="text-center p-3 custom-gradient-background" 
+                        style={{ background: "linear-gradient(135deg, #00b4db 0%, #0083b0 100%)" }}>
+                            <TheaterSeats 
+                                theater={theater} 
+                                occupied={occupied} setOccupied={setOccupied}
+                                selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats}
+                                onSeatClick={onSeatClick}
+                                loggedIn={loggedIn}
+                                user={user}
+                                expandedConcertID={expandedConcertID} setExpandedConcertID={setExpandedConcertID}
+                                reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
+                                unavailableSeats={unavailableSeats} setUnavailableSeats={setUnavailableSeats}
+                                message={message} setMessage={setMessage}
+                                blueSeats={blueSeats} setBlueSeats={setBlueSeats} />
+                    </td>
                   
               </tr>
           )}

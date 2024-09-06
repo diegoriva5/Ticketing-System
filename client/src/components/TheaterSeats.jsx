@@ -160,10 +160,10 @@ function TheaterSeats(props) {
     <div className="theater-seats">
       {loading ? (
         <div className="d-flex flex-column align-items-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading seats...</span>
+          <div className="spinner-border text-white" role="status">
+            <span className="visually-hidden text-white">Loading seats...</span>
           </div>
-          <div className="mt-2 text-primary">Loading seats...</div>
+          <div className="mt-2 text-primary text-white">Loading seats...</div>
         </div>
       
       ) : (
@@ -174,11 +174,11 @@ function TheaterSeats(props) {
           </div>
           <hr />
           <div className="seat-recap">
-            <i>Total seats: {theater.seats}</i>
-            <i>Occupied seats: {occupied.length}</i>
-            <i>Available seats: {availableSeats}</i>
+            <i className='text-white'>Total seats: {theater.seats}</i>
+            <i className='text-white'>Occupied seats: {occupied.length}</i>
+            <i className='text-white'>Available seats: {availableSeats}</i>
             {loggedIn && (
-              <i>Selected seats: {selectedSeats.length}</i>
+              <i className='text-white'>Selected seats: {selectedSeats.length}</i>
             )}
           </div>
           <hr />
@@ -188,10 +188,10 @@ function TheaterSeats(props) {
                 Click here to book selected seats
               </Button>
               <div className="text-center">
-                <div className="my-2 text-center">OR</div>
+                <div className="my-2 text-center text-white">OR</div>
               </div>
               <div className="d-flex align-items-center justify-content-center mb-3">
-                <div className="me-2">Select number of tickets: </div>
+                <div className="me-2 text-white">Select number of tickets: </div>
                 <DropdownButton
                   id="dropdown-ticket-select"
                   title={`${ticketCount}`} // Show the current selection

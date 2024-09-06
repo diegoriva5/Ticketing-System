@@ -134,6 +134,25 @@
   overflow-y: auto; /* Add vertical scrollbar if content exceeds max-height */
 }
 
+/* Reservations header */
+.reservations-heading {
+  background: linear-gradient(135deg, #25b63b 0%, #0083b0 100%); /* Gradient background */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px; /* Padding around the heading */
+  color: #fff; /* White text color */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  margin-bottom: 20px; /* Space below the heading */
+  text-align: center; /* Center align the text */
+}
+
+.reservations-heading h1 {
+  font-size: 2rem; /* Larger font size */
+  font-weight: bold; /* Bold text */
+  letter-spacing: 1px; /* Letter spacing for a modern look */
+  margin: 0; /* Remove default margin */
+}
+
+
 /* Reservations table CSS */
 .custom-table {
   border-collapse: separate; /* Allows rounded corners to be visible */
@@ -144,7 +163,7 @@
 }
 
 .custom-table thead th {
-  background-color: #a56c44; /* Brown background for header */
+  background-color: #4da65c; /* Brown background for header */
   color: #fff; /* White text color for header */
   border-bottom: 1px solid #ddd;
   border-top: none;
@@ -180,4 +199,92 @@
 .custom-table tfoot td:last-child {
   border-bottom-right-radius: 10px;
 }
+
+/* Concerts heading */
+.concerts-heading {
+  background: linear-gradient(135deg, #804106 0%, #452303 100%); /* Gradient background to match the concerts table */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px; /* Padding around the heading */
+  color: #fff; /* White text color */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+  margin-bottom: 30px; /* Space below the heading */
+  text-align: center; /* Center align the text */
+}
+
+.concerts-heading h1 {
+  font-size: 2rem; /* Larger font size */
+  font-weight: bold; /* Bold text */
+  letter-spacing: 1px; /* Letter spacing for a modern look */
+  margin: 0; /* Remove default margin */
+}
+
+
+/* Concerts Table CSS */
+.custom-concerts-table {
+  border-collapse: separate; /* Allows rounded corners to be visible */
+  border-spacing: 0; /* Ensures no spacing between borders */
+  border-radius: 12px; /* Rounded corners for the table */
+  overflow: hidden; /* Ensures the content stays within the rounded corners */
+  background-color: #f5f5f5; /* Light background color */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.custom-concerts-table thead th {
+  background-color: #833f08; /* Blue background for header */
+  color: #fff; /* White text color for header */
+  border-bottom: none; /* Remove bottom border */
+  border-top: none; /* Remove top border */
+  font-weight: bold;
+  border-radius: 12px 12px 0 0; /* Rounded top corners */
+  padding: 12px; /* Padding for header cells */
+}
+
+.custom-concerts-table tbody tr {
+  border-top: 1px solid #ddd; /* Thin border between rows */
+}
+
+.custom-concerts-table tbody tr:hover {
+  background-color: #e0e0e0; /* Light gray color for row hover */
+}
+
+.custom-concerts-table td {
+  padding: 12px; /* Padding for cells */
+  font-size: 14px; /* Font size for the cells */
+}
+
+/* Button Styling */
+.custom-concerts-table .btn-primary {
+  background-color: #4a90e2; /* Button background color */
+  border: none; /* Remove default border */
+  border-radius: 8px; /* Rounded corners for the button */
+  color: #fff; /* White text color */
+  font-weight: bold;
+  padding: 8px 16px; /* Padding for button */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.custom-concerts-table .btn-primary:hover {
+  background-color: #357abd; /* Darker blue on hover */
+}
+
+/* Optional: Style for expanded row (if needed) */
+.custom-concerts-table .expanded-row {
+  background-color: #f9f9f9; /* Slightly different background color for expanded rows */
+}
+
+.custom-concerts-table .expanded-row td {
+  padding: 20px; /* Extra padding for expanded rows */
+}
+
+/* Ensure these styles are included in your CSS file */
+
+.custom-row:hover {
+  background-color: #333 !important; /* Override inline styles */
+}
+
+.custom-gradient-background {
+  background: linear-gradient(135deg, #804106 0%, #452303 100%) !important;
+}
+
+
 
