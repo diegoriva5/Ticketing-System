@@ -32,6 +32,7 @@ function AppWithRouter(props) {
   const [blueSeats, setBlueSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [reservationList, setReservationList] = useState([]);
+  const [discount, setDiscount] = useState(null);
 
   const [reloadTrigger, setReloadTrigger] = useState(true); 
   const [message, setMessage] = useState('');
@@ -183,6 +184,8 @@ function AppWithRouter(props) {
               onDeleteReservation={handleDeleteReservation}
               blueSeats={blueSeats} setBlueSeats={setBlueSeats}
               reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
+              authToken={authToken} setAuthToken={setAuthToken}
+              discount={discount} setDiscount={setDiscount}
                />}/>
           <Route path="/login" element={<LoginLayout login={handleLogin} />} />
           <Route path="/confirmation" element={

@@ -1,13 +1,13 @@
 /*** Importing modules ***/
 const express = require('express');
 const morgan = require('morgan');                                  // logging middleware
-const { check, validationResult, oneOf } = require('express-validator'); // validation middleware
+const { check, validationResult, body } = require('express-validator'); // validation middleware
 const cors = require('cors');
 
 const jsonwebtoken = require('jsonwebtoken');
 
 const jwtSecret = 'qTX6walIEr47p7iXtTgLxDTXJRZYDC9egFjGLIn0rRiahB4T24T4d5f59CtyQmH8';
-const expireTime = 60; //seconds
+const expireTime = 3600; //seconds
 
 const concertsDao = require('./dao-concerts');
 const userDao = require('./dao-users');
@@ -98,59 +98,104 @@ const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
 app.get('/api/list-concerts',  
   (req, res) => {
     concertsDao.listConcerts()
-    .then(concerts => res.json(concerts))
-    .catch((err) => res.status(500).json(err));
+      .then(concerts => res.json(concerts))
+      .catch((err) => res.status(500).json(err));
   }
 );
 
 /*** Theaters APIs ***/
 app.get('/api/get-theater-info/:id', 
+  [ 
+    check('id').isInt({min: 1}) 
+  ],
   (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     theatersDao.getInfo(req.params.id)
-    .then(theaters => res.json(theaters))
-    .catch((err) => res.status(500).json(err));
+      .then(theaters => res.json(theaters))
+      .catch((err) => res.status(500).json(err));
   }
 );
 
 /*** Reservations APIs ***/
 app.get('/api/reservation/:concertId', 
+  [ 
+    check('concertId').isInt({min: 1}) 
+  ],
   (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     reservationsDao.getReservationByConcertID(req.params.concertId)
-    .then(reservations => res.json(reservations))
-    .catch(err => res.status(500).json(err));
+      .then(reservations => res.json(reservations))
+      .catch(err => res.status(500).json(err));
 });
 
 app.get('/api/reservationOfUser/:userId', isLoggedIn,
+  [ 
+    check('userId').isInt({min: 1}) 
+  ],
   (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     reservationsDao.getReservationsByUserID(req.user.id)
-    .then(reservations => res.json(reservations))
-    .catch(err => res.status(500).json(err));
+      .then(reservations => res.json(reservations))
+      .catch(err => res.status(500).json(err));
   }
 );
 
 app.get('/api/is-seat-available/:concertID/:row/:column', 
+  [ 
+    check('concertID').isInt({min: 1}), 
+    check('row').isInt({min: 1}),
+    check('column').isString().isAlpha()
+  ],
   (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     reservationsDao.isSeatAvailable(req.params.concertID, req.params.row, req.params.column)
-    .then(seats => res.json(seats))
-    .catch(err => res.status(500).json(err));
+      .then(seats => res.json(seats))
+      .catch(err => res.status(500).json(err));
   }
 )
 
 // API to confirm booking and create reservations
 app.post('/api/create-reservations-entry', isLoggedIn, 
+  [
+    body('concertID').isInt({ min: 1 }).withMessage('Sum must be a non-negative integer'),
+    body('userID').isInt({ min: 1 }).withMessage('Loyal must be 0 or 1'),
+    body('seats').isArray(),
+    body('seats.*').isString().isLength({ min: 2, max: 2})   // checks that each element in seats is of length 2
+
+  ], 
   (req, res) => {
-  const { concertID, seats, userID } = req.body;
-  reservationsDao.createReservations(concertID, seats, req.user.id)
-    .then(result => res.status(200).json(result))
-    .catch(err => { 
-      res.status(400).json({ error: err.message });
+    const { concertID, seats, userID } = req.body;
+    reservationsDao.createReservations(concertID, seats, req.user.id)
+      .then(result => res.status(200).json(result))
+      .catch(err => { 
+        res.status(400).json({ error: err.message });
     });
   }
 );
 
 // API to delete a reservation
 app.delete('/api/delete-reservation/:concertId/:userId', isLoggedIn,
+  [ 
+    check('concertId').isInt({min: 1}), 
+    check('userId').isInt({min: 1})
+  ],
   (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
     reservationsDao.deleteReservation(req.params.concertId, req.user.id)
       .then(result => res.status(200).json(result))
       .catch(err => res.status(500).json(err));

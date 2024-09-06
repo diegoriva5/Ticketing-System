@@ -17,7 +17,7 @@ exports.getUserById = (id) => {
       else {
         // By default, the local strategy looks for "username": 
         // for simplicity, instead of using "email", we create an object with that property.
-        const user = { id: row.id, username: row.email, name: row.name }
+        const user = { id: row.id, username: row.email, name: row.name, loyalty: row.loyalty }
         resolve(user);
       }
     });
@@ -35,7 +35,7 @@ exports.getUser = (email, password) => {
         resolve(false);
       }
       else {
-        const user = { id: row.id, username: row.email, name: row.name, level: row.level };
+        const user = { id: row.id, username: row.email, name: row.name, loyalty: row.loyalty };
 
         // Check the hashes with an async call, this operation may be CPU-intensive (and we don't want to block the server)
         crypto.scrypt(password, row.salt, 32, function (err, hashedPassword) { // WARN: it is 64 and not 32 (as in the week example) in the DB

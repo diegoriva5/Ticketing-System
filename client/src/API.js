@@ -168,6 +168,22 @@ const checkSeatIsAvailable = async(concertID, selectedSeats) => {
   }
 };
 
+/* Server2 APIs */
+async function getDiscount(authToken, sum, loyal) {
+  // retrieve info from an external server, where info can be accessible only via JWT token
+  return getJson(fetch('http://localhost:3002/api/' + 'compute-discount', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${authToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sum: sum,
+      loyal: loyal
+    }),
+  })
+  );
+}
 
 
 
@@ -220,6 +236,6 @@ async function getAuthToken() {
   )
 }
   
-const API = { getConcerts, getTheaterInfo, getReservations, getReservationsOfUser, confirmBooking, deleteReservationByID, checkSeatIsAvailable, logIn, getUserInfo, logOut, getAuthToken };
+const API = { getConcerts, getTheaterInfo, getReservations, getReservationsOfUser, confirmBooking, deleteReservationByID, checkSeatIsAvailable, getDiscount, logIn, getUserInfo, logOut, getAuthToken };
 
 export default API;

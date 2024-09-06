@@ -67,6 +67,8 @@ function TableLayout(props) {
       props.setReloadTrigger(false);
     }
   }, [reloadFromServer, props.reloadTrigger]);
+
+  
   
   return (      // mt-5 lo mette più in basso
     <>
@@ -83,6 +85,8 @@ function TableLayout(props) {
               expandedConcertID={props.expandedConcertID}
               setExpandedConcertID={props.setExpandedConcertID}
               user={props.user}
+              authToken={props.authToken} setAuthToken={props.setAuthToken}
+              discount={props.discount} setDiscount={props.setDiscount}
              />
           </>
           
