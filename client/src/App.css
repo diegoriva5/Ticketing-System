@@ -136,7 +136,7 @@
 
 /* Reservations header */
 .reservations-heading {
-  background: linear-gradient(135deg, #25b63b 0%, #0083b0 100%); /* Gradient background */
+  background: white; /* Gradient background */
   border-radius: 10px; /* Rounded corners */
   padding: 20px; /* Padding around the heading */
   color: #fff; /* White text color */
@@ -202,13 +202,14 @@
 
 /* Concerts heading */
 .concerts-heading {
-  background: linear-gradient(135deg, #804106 0%, #452303 100%); /* Gradient background to match the concerts table */
+  background: white; /* Gradient background to match the concerts table */
   border-radius: 10px; /* Rounded corners */
   padding: 20px; /* Padding around the heading */
-  color: #fff; /* White text color */
+  color: #452303; /* White text color */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
   margin-bottom: 30px; /* Space below the heading */
   text-align: center; /* Center align the text */
+  
 }
 
 .concerts-heading h1 {

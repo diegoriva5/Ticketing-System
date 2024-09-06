@@ -75,41 +75,43 @@ function TableLayout(props) {
       <div className="text-center mt-5">
         {props.loggedIn && (
           <>
-            <div className="flex-row justify-content-between reservations-heading">
-              <h1>List of Reservations of {props.user.name}</h1>
-            </div>
-            <ReservationsTable 
-              reservations={props.reservationList}
-              setReservations={props.setReservationList}
-              onDeleteReservation={props.onDeleteReservation}
-              expandedConcertID={props.expandedConcertID}
-              setExpandedConcertID={props.setExpandedConcertID}
-              user={props.user}
-              authToken={props.authToken} setAuthToken={props.setAuthToken}
-              discount={props.discount} setDiscount={props.setDiscount}
-             />
+            <div className="flex-row justify-content-between text-success reservations-heading">
+              <h1 className='my-3 mt-0'>List of Reservations of {props.user.name}</h1>
+            
+              <ReservationsTable 
+                reservations={props.reservationList}
+                setReservations={props.setReservationList}
+                onDeleteReservation={props.onDeleteReservation}
+                expandedConcertID={props.expandedConcertID}
+                setExpandedConcertID={props.setExpandedConcertID}
+                user={props.user}
+                authToken={props.authToken} setAuthToken={props.setAuthToken}
+                discount={props.discount} setDiscount={props.setDiscount}
+              />
+             </div>
           </>
           
         )}
       </div>
       
       
-      <div className="flex-row justify-content-between mt-5 concerts-heading">
-        <h1>List of Concerts</h1>
+      <div className="flex-row justify-content-between mt-2 concerts-heading">
+        <h1 className='my-3 mt-0'>List of Concerts</h1>
+      
+        <ConcertsTable 
+          concerts={props.concertList} loggedIn={props.loggedIn}
+          expandedConcertID={props.expandedConcertID} setExpandedConcertID={props.setExpandedConcertID}
+          handleToggleSeats={props.handleToggleSeats}
+          theater={props.theater} setTheater={props.setTheater}
+          occupied={props.occupied} setOccupied={props.setOccupied}
+          selectedSeats={props.selectedSeats} setSelectedSeats={props.setSelectedSeats}
+          onSeatClick={props.onSeatClick}
+          user={props.user}
+          reloadTrigger={props.reloadTrigger}
+          setReloadTrigger={props.setReloadTrigger}
+          message={props.message} setMessage={props.setMessage}
+          blueSeats={props.blueSeats} setBlueSeats={props.setBlueSeats} />
       </div>
-      <ConcertsTable 
-        concerts={props.concertList} loggedIn={props.loggedIn}
-        expandedConcertID={props.expandedConcertID} setExpandedConcertID={props.setExpandedConcertID}
-        handleToggleSeats={props.handleToggleSeats}
-        theater={props.theater} setTheater={props.setTheater}
-        occupied={props.occupied} setOccupied={props.setOccupied}
-        selectedSeats={props.selectedSeats} setSelectedSeats={props.setSelectedSeats}
-        onSeatClick={props.onSeatClick}
-        user={props.user}
-        reloadTrigger={props.reloadTrigger}
-        setReloadTrigger={props.setReloadTrigger}
-        message={props.message} setMessage={props.setMessage}
-        blueSeats={props.blueSeats} setBlueSeats={props.setBlueSeats} />
     </>
   );
 }
