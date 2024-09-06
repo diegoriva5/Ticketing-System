@@ -174,11 +174,11 @@ function TheaterSeats(props) {
           </div>
           <hr />
           <div className="seat-recap">
-            <i className='text-white'>Total seats: {theater.seats}</i>
-            <i className='text-white'>Occupied seats: {occupied.length}</i>
-            <i className='text-white'>Available seats: {availableSeats}</i>
+            <i className='text-black'>Total seats: {theater.seats}</i>
+            <i className='text-black'>Occupied seats: {occupied.length}</i>
+            <i className='text-black'>Available seats: {availableSeats}</i>
             {loggedIn && (
-              <i className='text-white'>Selected seats: {selectedSeats.length}</i>
+              <i className='text-black'>Selected seats: {selectedSeats.length}</i>
             )}
           </div>
           <hr />
@@ -188,10 +188,10 @@ function TheaterSeats(props) {
                 Click here to book selected seats
               </Button>
               <div className="text-center">
-                <div className="my-2 text-center text-white">OR</div>
+                <div className="my-2 text-center text-black">OR</div>
               </div>
               <div className="d-flex align-items-center justify-content-center mb-3">
-                <div className="me-2 text-white">Select number of tickets: </div>
+                <div className="me-2 text-black">Select number of tickets: </div>
                 <DropdownButton
                   id="dropdown-ticket-select"
                   title={`${ticketCount}`} // Show the current selection

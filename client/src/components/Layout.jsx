@@ -76,7 +76,7 @@ function TableLayout(props) {
         {props.loggedIn && (
           <>
             <div className="flex-row justify-content-between text-success reservations-heading">
-              <h1 className='my-3 mt-0'>List of Reservations of {props.user.name}</h1>
+              <h1 className='my-3 mt-0'>Your reservations</h1>
             
               <ReservationsTable 
                 reservations={props.reservationList}
@@ -96,7 +96,7 @@ function TableLayout(props) {
       
       
       <div className="flex-row justify-content-between mt-2 concerts-heading">
-        <h1 className='my-3 mt-0'>List of Concerts</h1>
+        <h1 className='my-3 mt-0'>Next concerts</h1>
       
         <ConcertsTable 
           concerts={props.concertList} loggedIn={props.loggedIn}

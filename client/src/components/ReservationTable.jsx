@@ -85,7 +85,7 @@ function ReservationsTable(props) {
       )}
 
       {reservations.length > 0 && (
-        <Card className="border-0 mb-4" style={{ borderRadius: "15px", background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)", color: "#fff", boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)" }}>
+        <Card className="border-0 mb-4" style={{ borderRadius: "15px", background: "linear-gradient(135deg, #4da65c 0%, #2575fc 100%)", color: "#fff", boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)" }}>
           <Card.Body className="p-4 text-center">
             <Card.Title className="mb-3" style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "1px" }}>🎉 Thanks for booking with us!</Card.Title>
             <div className="mb-4">

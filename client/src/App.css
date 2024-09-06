@@ -205,11 +205,10 @@
   background: white; /* Gradient background to match the concerts table */
   border-radius: 10px; /* Rounded corners */
   padding: 20px; /* Padding around the heading */
-  color: #452303; /* White text color */
+  color: #2575fc; /* White text color */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
   margin-bottom: 30px; /* Space below the heading */
   text-align: center; /* Center align the text */
-  
 }
 
 .concerts-heading h1 {
@@ -231,7 +230,7 @@
 }
 
 .custom-concerts-table thead th {
-  background-color: #833f08; /* Blue background for header */
+  background-color: #2575fc; /* Blue background for header */
   color: #fff; /* White text color for header */
   border-bottom: none; /* Remove bottom border */
   border-top: none; /* Remove top border */
@@ -255,7 +254,7 @@
 
 /* Button Styling */
 .custom-concerts-table .btn-primary {
-  background-color: #4a90e2; /* Button background color */
+  background-color: #2575fc; /* Button background color */
   border: none; /* Remove default border */
   border-radius: 8px; /* Rounded corners for the button */
   color: #fff; /* White text color */
@@ -265,7 +264,7 @@
 }
 
 .custom-concerts-table .btn-primary:hover {
-  background-color: #357abd; /* Darker blue on hover */
+  background-color: #2f94c3; /* Darker blue on hover */
 }
 
 /* Optional: Style for expanded row (if needed) */
@@ -277,14 +276,12 @@
   padding: 20px; /* Extra padding for expanded rows */
 }
 
-/* Ensure these styles are included in your CSS file */
-
 .custom-row:hover {
   background-color: #333 !important; /* Override inline styles */
 }
 
 .custom-gradient-background {
-  background: linear-gradient(135deg, #804106 0%, #452303 100%) !important;
+  background: linear-gradient(135deg, #cac7c5 0%, #cac7c5 100%) !important;
 }
 
 
