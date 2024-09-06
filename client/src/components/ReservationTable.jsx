@@ -14,12 +14,10 @@ function ReservationsTable(props) {
         if (Array.isArray(reservations)) {
           const rows = reservations.map(e => e.reservedRow);
           const sum = rows.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-          console.log(user.loyalty);
           API.getDiscount(props.authToken, sum, user.loyalty)
           .then(response => {
             // Handle the discount value (e.g., store it in a state or use it in some logic)
             setDiscount(response.discount);
-            console.log('Discount received:', response.discount);
           })
           .catch(err => {
             setDiscount(null);
@@ -90,14 +88,14 @@ function ReservationsTable(props) {
         <Card className="border-0 mb-4" style={{ borderRadius: "15px", background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)", color: "#fff", boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)" }}>
           <Card.Body className="p-4 text-center">
             <Card.Title className="mb-3" style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "1px" }}>🎉 Thanks for booking with us!</Card.Title>
-            <Card.Text className="mb-4">
+            <div className="mb-4">
               <div style={{ fontWeight: "500", marginBottom: "15px", fontSize: "1.1rem" }}>
                 Here's your discount percentage for the next year's concert season:
               </div>
               <span className="badge" style={{ backgroundColor: "#ff5722", color: "#fff", fontSize: "1.5rem", padding: "15px 30px", borderRadius: "20px", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)" }}>
                 {discount}%
               </span>
-            </Card.Text>
+            </div>
           </Card.Body>
         </Card>
       )}
