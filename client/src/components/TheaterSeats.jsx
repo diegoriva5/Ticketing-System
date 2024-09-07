@@ -173,13 +173,34 @@ function TheaterSeats(props) {
             {seats}
           </div>
           <hr />
-          <div className="seat-recap">
-            <i className='text-black'>Total seats: {theater.seats}</i>
-            <i className='text-black'>Occupied seats: {occupied.length}</i>
-            <i className='text-black'>Available seats: {availableSeats}</i>
-            {loggedIn && (
-              <i className='text-black'>Selected seats: {selectedSeats.length}</i>
-            )}
+          <div className="seat-info-container">
+            {/* Legend Section */}
+            <div className="seat-legend py-0">
+              <div className="legend-item">
+                <div className="seat available"></div>
+                <span>Available</span>
+              </div>
+              <div className="legend-item">
+                <div className="seat occupied"></div>
+                <span>Occupied</span>
+              </div>
+              <div className="legend-item">
+                <div className="seat selected"></div>
+                <span>Selected</span>
+              </div>
+              <div className="legend-item">
+                <div className="seat blue"></div>
+                <span>Pending Reservation</span>
+              </div>
+            </div>
+            <div className="seat-recap my-0">
+              <i className='text-black'>Total seats: {theater.seats}</i>
+              <i className='text-black'>Occupied seats: {occupied.length}</i>
+              <i className='text-black'>Available seats: {availableSeats}</i>
+              {loggedIn && (
+                <i className='text-black'>Selected seats: {selectedSeats.length}</i>
+              )}
+            </div>
           </div>
           <hr />
           {loggedIn ? ( // Show buttons if user is logged in

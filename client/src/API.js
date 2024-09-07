@@ -148,17 +148,14 @@ const checkSeatIsAvailable = async(concertID, selectedSeats) => {
     const responses = await Promise.all(urls.map(url => fetch(url, { credentials: 'include' })));
 
     responses.forEach((res, index) => {
-      console.log(`Response status for request ${index}: ${res.status}`);
       if (!res.ok) {
         console.error(`Request ${index} failed with status: ${res.status}`);
       }
     });
 
     const occupiedSeatsResults = await Promise.all(responses.map(res => res.json()));
-    console.log('Occupied Seats Results:', occupiedSeatsResults);
 
     const occupiedSeats = occupiedSeatsResults.filter(result => result != null);
-    console.log('Filtered Occupied Seats:', occupiedSeats);
 
     return occupiedSeats;
   

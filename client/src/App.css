@@ -284,5 +284,45 @@
   background: linear-gradient(135deg, #cac7c5 0%, #cac7c5 100%) !important;
 }
 
+/* Container for seat recap and legend */
+.seat-info-container {
+  display: flex; /* Aligns seat recap and legend side by side */
+  justify-content: center; /* Center the container horizontally */
+  align-items: flex-start; /* Aligns the items at the top */
+  margin: 10px 0; /* Margin around the container */
+  gap: 120px; /* Reduced space between recap and legend */
+}
 
+/* Individual seat recap section */
+.seat-recap {
+  display: flex; /* Aligns recap items horizontally */
+  flex-direction: column; /* Stacks items vertically */
+  gap: 1px; /* Space between recap items */
+  text-align: left; /* Align text to the left */
+}
+
+/* Legend container styling */
+.seat-legend {
+  display: flex; /* Align legend items horizontally */
+  flex-direction: column; /* Stacks legend items vertically */
+  gap: 8px; /* Space between legend items */
+  text-align: left; /* Align text to the left */
+}
+
+/* Legend item styling */
+.legend-item {
+  display: flex; /* Aligns seat color and label horizontally */
+  align-items: center; /* Centers items vertically */
+  gap: 5px; /* Space between the seat and label */
+}
+/* Non-clickable seats in the legend */
+.legend-item .seat {
+  width: 20px; /* Smaller size for legend seats */
+  height: 20px; /* Smaller size for legend seats */
+  cursor: default; /* Default cursor for non-clickable */
+  pointer-events: none; /* Disable clicking */
+  box-shadow: none; /* Remove shadow for legend seats */
+  border-width: 1px; /* Thinner border for legend seats */
+  margin-right: 5px; /* Space between seat box and label */
+}
 
