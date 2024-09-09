@@ -133,6 +133,7 @@ function TheaterSeats(props) {
             .then(reservations => {
               setOccupied(reservations);
               setSelectedSeats([]); // Clear selected seats
+              setTicketCount(0);
               alert('Booking successful!');
             })
             .catch(e => {
@@ -184,14 +185,18 @@ function TheaterSeats(props) {
                 <div className="seat occupied"></div>
                 <span>Occupied</span>
               </div>
-              <div className="legend-item">
-                <div className="seat selected"></div>
-                <span>Selected</span>
-              </div>
-              <div className="legend-item">
-                <div className="seat blue"></div>
-                <span>Pending Reservation</span>
-              </div>
+              {loggedIn && (
+                <>
+                  <div className="legend-item">
+                    <div className="seat selected"></div>
+                    <span>Selected</span>
+                  </div>
+                  <div className="legend-item">
+                    <div className="seat blue"></div>
+                    <span>Pending Reservation</span>
+                  </div>
+                </>
+              )}
             </div>
             <div className="seat-recap my-0">
               <i className='text-black'>Total seats: {theater.seats}</i>
@@ -202,6 +207,7 @@ function TheaterSeats(props) {
               )}
             </div>
           </div>
+
           <hr />
           {loggedIn ? ( // Show buttons if user is logged in
             <div className="text-center mb-3">
