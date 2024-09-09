@@ -6,27 +6,8 @@ import { TheaterSeats } from './TheaterSeats';
 import API from '../API.js';
 
 function ReservationsTable(props) {
-  const { reservations, onDeleteReservation, user, discount, setDiscount } = props;
+  const { reservations, onDeleteReservation, user, authToken } = props;
 
-  useEffect(() => {
-    if (reservations.length != 0) {
-      if (props.authToken) {
-        if (Array.isArray(reservations)) {
-          const rows = reservations.map(e => e.reservedRow);
-          const sum = rows.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-          API.getDiscount(props.authToken, sum, user.loyalty)
-          .then(response => {
-            // Handle the discount value (e.g., store it in a state or use it in some logic)
-            setDiscount(response.discount);
-          })
-          .catch(err => {
-            setDiscount(null);
-            console.error('Error fetching discount:', err);
-          });
-        }
-      }
-    }
-}, [reservations, props.authToken]);
 
   // Group reservations by concert_id
   const groupedReservations = {};
@@ -39,7 +20,7 @@ function ReservationsTable(props) {
         concert_id: reservation.concert_id,
         concertName: reservation.concertName,
         theaterName: reservation.theaterName,
-        seats: [],
+        seats: []
       };
     }
 
@@ -61,6 +42,7 @@ function ReservationsTable(props) {
                       <th className="text-center">Concert</th>
                       <th className="text-center">Theater</th>
                       <th className="text-center">Seats</th>
+                      <th className="text-center bi bi-gift"> Discount</th>
                       <th className="text-center">Click to delete</th>
                   </tr>
           </thead>
@@ -76,6 +58,7 @@ function ReservationsTable(props) {
                 expandedConcertID={props.expandedConcertID}
                 setExpandedConcertID={props.setExpandedConcertID}
                 user={user}
+                authToken={authToken}
               />
             ))}
           </tbody>
@@ -90,11 +73,8 @@ function ReservationsTable(props) {
             <Card.Title className="mb-3" style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "1px" }}>🎉 Thanks for booking with us!</Card.Title>
             <div className="mb-4">
               <div style={{ fontWeight: "500", marginBottom: "15px", fontSize: "1.1rem" }}>
-                Here's your discount percentage for the next year's concert season:
+                Check out your discounts next to each reservation!
               </div>
-              <span className="badge" style={{ backgroundColor: "#ff5722", color: "#fff", fontSize: "1.5rem", padding: "15px 30px", borderRadius: "20px", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)" }}>
-                {discount}%
-              </span>
             </div>
           </Card.Body>
         </Card>
@@ -104,7 +84,32 @@ function ReservationsTable(props) {
 }
 
 function ReservationRow(props) {
-  const { concertName, theaterName, seats, concertID, onDeleteReservation, setExpandedConcertID, user } = props;
+  const { concertName, theaterName, seats, concertID, onDeleteReservation, setExpandedConcertID, user, authToken } = props;
+  
+  // Local state for managing the discount
+  const [discount, setDiscount] = useState(0);
+
+  // Function to calculate discount
+  const calculateDiscount = async () => {
+    if (authToken && Array.isArray(seats)) {
+      const rows = seats.map((e) => parseInt(e[0], 10)); // Convert seat rows to numbers
+      const sum = rows.reduce((accumulator, currentValue) => accumulator + currentValue, 0); // Calculate sum of rows
+      
+      try {
+        const response = await API.getDiscount(authToken, sum, user.loyalty); // Fetch discount from the API
+        return response.discount; // Return the computed discount
+      } catch (err) {
+        console.error('Error fetching discount:', err);
+        return 0; // Return 0 if there is an error
+      }
+    }
+    return 0; // Return 0 if authToken or seats is invalid
+  };
+
+  // Use useEffect to calculate the discount once when the component mounts or when seats change
+  useEffect(() => {
+    calculateDiscount().then(dis => setDiscount(dis));
+  }, [seats]); // Depend on seats to re-calculate if seats change
 
   const handleDeleteClick = () => {
     onDeleteReservation(concertID, user.id);
@@ -116,6 +121,7 @@ function ReservationRow(props) {
       <td className="text-center">{concertName}</td>
       <td className="text-center">{theaterName}</td>
       <td className="text-center">{seats.join(', ')}</td>
+      <td className="text-center">{discount}%</td>
       <td className="text-center">
         <i
           className="bi bi-trash"

@@ -86,6 +86,7 @@ function TheaterSeats(props) {
   const handleSelectTickets = (count) => {
     if(loggedIn){
       setTicketCount(count); // Update the state with the selected number of tickets
+      setSelectedSeats([]);
     }
   };
 

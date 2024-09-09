@@ -186,10 +186,6 @@ function ConfirmationLayout(props) {
       navigate('/');
     }
   };
-  
-  
-  
-  
 
   const handleBack = () => {
     setSelectedSeats([]);
