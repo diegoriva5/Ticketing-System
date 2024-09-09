@@ -140,12 +140,14 @@ function TheaterSeats(props) {
             .catch(e => {
               console.error(e);
               setMessage(e.message);
+              setTicketCount(0);
             });
 
         } catch (error) {
           alert('Error. The reason will be displayed in red at the top of the page after pressing OK.');
           setMessage(error.message);
           setSelectedSeats([]); // Clear selected seats after failed booking
+          setTicketCount(0);
           navigate('/'); // Navigate back to the home page after failed confirmation
         }
       } else {

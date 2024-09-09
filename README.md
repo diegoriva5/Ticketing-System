@@ -14,6 +14,15 @@
 
 ## API Server
 
+- GET `/api/list-concerts`: Get all the concerts as a JSON list.
+  - Response body: 
+  - Codes: 200 OK, 500 Internal Server Error
+
+
+### Concerts APIs
+
+
+
 - POST `/api/login`
   - request parameters and request body content
   - response body content
@@ -27,9 +36,11 @@
 
 ## API Server2
 
-- GET `/api/something`
-  - request parameters
-  - response body content
+- GET `/api/compute-discount`
+  - Parameters: 
+    1. sum: the sum of the rows in the reservation
+    2. loyal: 1 if the customer is loyal, 0 if it's not loyal
+  - Response: the discount value
 
 
 ## Database Tables
