@@ -98,7 +98,7 @@ const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
 app.get('/api/list-concerts',  
   (req, res) => {
     concertsDao.listConcerts()
-      .then(concerts => res.json(concerts))
+      .then(concerts => res.status(200).json(concerts))
       .catch((err) => res.status(500).json(err));
   }
 );
@@ -111,10 +111,10 @@ app.get('/api/get-theater-info/:id',
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() });
     }
     theatersDao.getInfo(req.params.id)
-      .then(theaters => res.json(theaters))
+      .then(theaters => res.status(200).json(theaters))
       .catch((err) => res.status(500).json(err));
   }
 );
@@ -127,27 +127,34 @@ app.get('/api/reservation/:concertId',
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() });
     }
     reservationsDao.getReservationByConcertID(req.params.concertId)
-      .then(reservations => res.json(reservations))
+      .then(reservations => res.status(200).json(reservations))
       .catch(err => res.status(500).json(err));
 });
 
 app.get('/api/reservationOfUser/:userId', isLoggedIn,
-  [ 
-    check('userId').isInt({min: 1}) 
+  [
+    check('userId').isInt({ min: 1 })
   ],
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() });
     }
+    
     reservationsDao.getReservationsByUserID(req.user.id)
-      .then(reservations => res.json(reservations))
+      .then(reservations => {
+        if (reservations.length === 0) {
+          return res.status(204).send(); // Return 204 if the array is empty
+        }
+        res.status(200).json(reservations);
+      })
       .catch(err => res.status(500).json(err));
   }
 );
+
 
 app.get('/api/is-seat-available/:concertID/:row/:column', 
   [ 
@@ -158,10 +165,10 @@ app.get('/api/is-seat-available/:concertID/:row/:column',
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() });
     }
     reservationsDao.isSeatAvailable(req.params.concertID, req.params.row, req.params.column)
-      .then(seats => res.json(seats))
+      .then(seats => res.status(200).json(seats))
       .catch(err => res.status(500).json(err));
   }
 )
@@ -176,11 +183,24 @@ app.post('/api/create-reservations-entry', isLoggedIn,
 
   ], 
   (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
     const { concertID, seats, userID } = req.body;
     reservationsDao.createReservations(concertID, seats, req.user.id)
-      .then(result => res.status(200).json(result))
+      .then(result => res.status(201).json(result))
       .catch(err => { 
-        res.status(400).json({ error: err.message });
+        if (err.message === 'User already has a reservation for this concert.') {
+          // Send 406 if user already has a reservation
+          res.status(406).json({ error: err.message });
+        } else if (err.message === 'One or more selected seats, colored in blue, were already reserved. Please try again.') {
+          // Handle other specific error cases as needed
+          res.status(409).json({ error: err.message }); // Example: conflict error
+        } else {
+          // General server error
+          res.status(500).json({ error: err.message });
+        }
     });
   }
 );
@@ -194,7 +214,7 @@ app.delete('/api/delete-reservation/:concertId/:userId', isLoggedIn,
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() });
     }
     reservationsDao.deleteReservation(req.params.concertId, req.user.id)
       .then(result => res.status(200).json(result))
@@ -223,7 +243,7 @@ app.post('/api/sessions', function(req, res, next) {
         
         // req.user contains the authenticated user, we send all the user info back
         // this is coming from userDao.getUser() in LocalStratecy Verify Fn
-        return res.json(req.user);
+        return res.status(200).json(req.user);
       });
   })(req, res, next);
 });
@@ -232,6 +252,7 @@ app.post('/api/sessions', function(req, res, next) {
 // This route checks whether the user is logged in or not.
 app.get('/api/sessions/current', (req, res) => {
   if(req.isAuthenticated()) {
+
     res.status(200).json(req.user);}
   else
     res.status(401).json({error: 'Not authenticated'});
@@ -249,12 +270,13 @@ app.delete('/api/sessions/current', (req, res) => {
 
 // GET /api/auth-token
 app.get('/api/auth-token', isLoggedIn, (req, res) => {
-  let authLevel = req.user.level;
+  let loyalty = req.user.loyalty;
+  let id = req.user.id;
 
-  const payloadToSign = { access: authLevel, authId: 1234 };
+  const payloadToSign = { access: loyalty, authId: id };
   const jwtToken = jsonwebtoken.sign(payloadToSign, jwtSecret, {expiresIn: expireTime});
 
-  res.json({token: jwtToken, authLevel: authLevel});  // authLevel is just for debug. Anyway it is in the JWT payload
+  res.status(200).json({token: jwtToken, loyalty: loyalty});  // authLevel is just for debug. Anyway it is in the JWT payload
 });
 
 

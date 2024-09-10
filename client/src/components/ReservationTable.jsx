@@ -59,6 +59,7 @@ function ReservationsTable(props) {
                 setExpandedConcertID={props.setExpandedConcertID}
                 user={user}
                 authToken={authToken}
+                reservations={reservations}
               />
             ))}
           </tbody>
@@ -84,7 +85,7 @@ function ReservationsTable(props) {
 }
 
 function ReservationRow(props) {
-  const { concertName, theaterName, seats, concertID, onDeleteReservation, setExpandedConcertID, user, authToken } = props;
+  const { concertName, theaterName, seats, concertID, onDeleteReservation, setExpandedConcertID, user, authToken, reservations } = props;
   
   // Local state for managing the discount
   const [discount, setDiscount] = useState(0);
@@ -109,7 +110,7 @@ function ReservationRow(props) {
   // Use useEffect to calculate the discount once when the component mounts or when seats change
   useEffect(() => {
     calculateDiscount().then(dis => setDiscount(dis));
-  }, [seats]); // Depend on seats to re-calculate if seats change
+  }, [authToken]); // Depend on seats to re-calculate if seats change
 
   const handleDeleteClick = () => {
     onDeleteReservation(concertID, user.id);

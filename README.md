@@ -14,33 +14,213 @@
 
 ## API Server
 
-- GET `/api/list-concerts`: Get all the concerts as a JSON list.
-  - Response body: 
-  - Codes: 200 OK, 500 Internal Server Error
-
-
 ### Concerts APIs
 
+* **GET `/api/list-concerts`**: Get all the concerts as a JSON list.
+  - **Response body**: 
+  ```
+  [
+    {
+      "id": 1,
+      "name": "Vasco",
+      "theater_id": "1",
+      "theater_name": "Theater 1"
+    }
+    ...
+  ]
+  ```
+  - Codes: `200 OK`, `500 Internal Server Error`
 
+### Theaters APIs
 
-- POST `/api/login`
-  - request parameters and request body content
-  - response body content
-- GET `/api/something`
-  - request parameters
-  - response body content
-- POST `/api/something`
-  - request parameters and request body content
-  - response body content
-- ...
+* **GET `/api/get-theater-info/:id`**: get theater info given its id
+  - **Parameters**: 
+    1. id as an INT
+    ```
+      {
+        "id": 2
+      }
+    ```
+  - **Response body**:
+    ```
+    [
+        {
+            "id": "1",
+            "name": "Theater 1",
+            "size": "Small",
+            "rows": 4,
+            "columns": 8,
+            "seats": 32
+        }
+    ]
+    ```
+  - Codes: `200 OK`, `422 Unprocessable Content`, `500 Internal Server Error`
+
+### Reservations APIs
+
+* **GET `/api/reservation/:concertId`**: retrieves all the reservations of a certain concert, given its id
+  - **Parameters**: 
+    1. concertId as an INT
+    ```
+      {
+        "concertId": 1
+      }
+    ```
+  - **Response body**:
+    ```
+    [
+        {
+            "reservation_id": 1,
+            "concert_id": 1,
+            "row": 1,
+            "column": "A",
+            "user_id": 1
+        }
+        ...
+    ]
+    ```
+  - Codes: `200 OK`, `422 Unprocessable Content`, `500 Internal Server Error`
+
+* **GET `/api/reservationOfUser/:userId`**: retrieves all the reservations of a certain user, given its id
+  - **Parameters**: 
+    1. userId as an INT
+    ```
+      {
+        "userId": 1
+      }
+    ```
+  - **Response body**:
+    ```
+    [
+        {
+            "reservation_id": 1,
+            "concert_id": 1,
+            "row": 1,
+            "column": "A",
+            "user_id": 1
+        }
+        ...
+    ]
+    ```
+  - Codes: `200 OK`, `204 No Content`, `422 Unprocessable Content`, `500 Internal Server Error`
+
+* **GET `/api/is-seat-available/:concertID/:row/:column`**: checks if a specific seat is available in a certain concert
+  - **Parameters**: 
+    1. concertID as an INT
+    2. row as an INT
+    3. column as a STRING
+    ```
+      {
+        "concertId": 1
+      }
+    ```
+  - **Response body**:
+    If the seat in that concert exists, it retrieves the seat:
+    ```
+        {
+            "row": 1,
+            "column": 1,
+        }
+    ```
+    If it doesn't exist, it retrieves null:
+    ```
+      null
+    ```
+
+  - Codes: `200 OK`, `422 Unprocessable Content`, `500 Internal Server Error`
+
+* **POST `/api/create-reservations-entry`**: it creates a reservation in the reservations table
+  - **Request body**: 
+    ```
+      {
+        "concertID": 1,
+        "userID": 1, 
+        "seats": [ "1A", "2B" ],
+      }
+    ```
+  - **Response body**: if all the reservation are inserted successfully:
+    ```
+        {
+            true
+        }
+    ```
+  - Codes: `201 Created`, `422 Unprocessable Content`, `406 Not Acceptable`, `409 Conflict`, `500 Internal Server Error`
+
+* **DELETE `'/api/delete-reservation/:concertId/:userId`**: deletes all the reservations of a user for a specific concert
+  - **Request body**: 
+    ```
+      {
+        "concertId": 1,
+        "userId": 1
+      }
+    ```
+  - **Response body**: if all the reservation are inserted successfully, it returns the number of modified lines in the database.
+    
+  - Codes: `200 OK`, `422 Unprocessable Content`, `500 Internal Server Error`
+
+### Authentication APIs
+
+* **POST `/api/sessions`**: Authenticate and login the user.
+  - **Request**: JSON object with _username_ equal to email:   
+    ```
+    { "username": "u1@p.it", "password": "pwd" }
+    ```
+  - **Response body**: JSON object with the student's info and, if the user has a study plan, studyPlan; or a description of the errors:   
+    ```
+    { 
+      "id": 1
+      "email": "u1@p.it", 
+      "name": "Alice",
+      "loyalty": 1
+    }
+    ```
+  - Codes: `200 OK`, `401 Unauthorized` (incorrect email and/or password).
+
+* **GET `/api/sessions/current`**: Get info on the logged in user.
+  - **Response body**: JSON object with the same info as in login:   
+    ```
+    { 
+      "id": 1
+      "email": "u1@p.it", 
+      "name": "Alice",
+      "loyalty": 1 
+    }
+    ```
+  - Codes: `200 OK`, `401 Unauthorized`.
+
+* **DELETE `/api/sessions/current`**: Logout the user.
+  - Codes: `200 OK`, `401 Unauthorized`.
+
+### Token APIs
+
+* **GET `/api/auth-token`**: Returns an auth token the logged in user.
+  - **Response body**: JSON object with token
+  - **Token payload**: access and authId
+    ```
+    { access: req.user.loyalty, authId: req.user.id }
+    ```
+  - Codes: `200 OK`, `401 Unauthorized`.
+
 
 ## API Server2
 
-- GET `/api/compute-discount`
-  - Parameters: 
-    1. sum: the sum of the rows in the reservation
-    2. loyal: 1 if the customer is loyal, 0 if it's not loyal
-  - Response: the discount value
+- **GET `/api/compute-discount`**
+  - **Parameters**: 
+    1. sum: the sum of the rows in the reservation, as an INT
+    2. loyal: 1 if the customer is loyal, 0 if it's not loyal, as an INT
+    ```
+      { 
+        "sum": 10,
+        "loyal": 0
+      }
+    ```
+  - **Response body**: the discount value, as an INT
+    ```
+      { 
+        "discount": 12 
+      }
+    ```
+  - Codes: `200 OK`, `422 Unprocessable Content`
 
 
 ## Database Tables
@@ -52,11 +232,15 @@
 
 ## Main React Components
 
-- `ListOfSomething` (in `List.js`): component purpose and main functionality
-- `GreatButton` (in `GreatButton.js`): component purpose and main functionality
-- ...
+- `AppWithRouter` (in `App.jsx`): technically a component, takes the role of App and is rendered inside a Router to be able to use the useNavigate hook. This maintains most of the state of the app.
+- `GenericLayout` (in `App.jsx`): it is the page where all the other components are.
+- `TableLayout` (in `App.jsx`): it renders the concert list and the user's reservation list
+- `ReservationTable` (in `Layout.jsx`): the user's reservation table inside the `TableLayout`
+- `ConcertsTable` (in `Layout.jsx`): the concert table inside the `TableLayout`
+- `LoginLayout` (in `App.jsx`): responsible for handling the login page
+- `ConfirmationLayout` (in `App.jsx`): responsible for handling the confirmation page, when the user chooses his seats by clicking on them.
+- `Navigation` (in `Layout.jsx`): handles the navigation bar on top of the page
 
-(only _main_ components, minor ones may be skipped)
 
 ## Screenshot
 

@@ -61,7 +61,7 @@ app.post('/api/compute-discount',
     // Validate request body
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(422).json({ errors: errors.array() });
     }
 
     const { sum, loyal } = req.body;
@@ -76,11 +76,11 @@ app.post('/api/compute-discount',
     let finalValue = Math.round(baseValue + randomValue);
 
     if(finalValue < 5){
-      res.json({ discount: 5 });
+      res.status(200).json({ discount: 5 });
     } else if(finalValue > 50) {
-      res.json({ discount: 50 });
+      res.status(200).json({ discount: 50 });
     } else {
-      res.json({ discount: finalValue });
+      res.status(200).json({ discount: finalValue });
     }
 });
 
