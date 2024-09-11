@@ -7,9 +7,9 @@
 - Route `/`
     1. When no one is logged in, it displays the navigation bar and the list of concerts. Clicking on "Show seats", the seat map is displayed with the total seats number, the number of occupied seats and the number of available seats. 
     2. When a user is logged in, his reservations are shown on top of the page. Moreover, when "Show seats" is clicked, also the number of selected seats is shown and the user can book tickets. If he clicks on an available seat, it will become yellow and the user can click on the yellow "Click here to book selected tickets" button to book the specific seats he wants; he will then be redirected to the `/confirmation` route. If he wants to book just a number of seats, without regarding of the position, he can pick the number of tickets he wants in the black button on the left and then click on the black "Confirm Automatic Booking" button to book them automatically. 
-- Route `/confirmation`
+- Route `/confirmation`\
     It shows a recap of the manual booking. It shows the name of the user, the name of the concert, the name of the theater and all the selected seats. Clicking on the green "Confirm Booking" button will send the request to the server, which will confirm or discard the request based on the requirements of the project. Clicking on the red "Back" button will send the user to the main page.
-- Route `/login`
+- Route `/login` \
     It is the page that enables a user to log in, using the email and the password. 
 
 ## API Server
@@ -35,10 +35,10 @@
 
 * **GET `/api/get-theater-info/:id`**: get theater info given its id
   - **Parameters**: 
-    1. id as an INT
+    1. id: an INT $\ge$ 1
     ```
       {
-        "id": 2
+        "id": 1
       }
     ```
   - **Response body**:
@@ -60,7 +60,7 @@
 
 * **GET `/api/reservation/:concertId`**: retrieves all the reservations of a certain concert, given its id
   - **Parameters**: 
-    1. concertId as an INT
+    1. concertId: an INT $\ge$ 1 
     ```
       {
         "concertId": 1
@@ -106,12 +106,14 @@
 
 * **GET `/api/is-seat-available/:concertID/:row/:column`**: checks if a specific seat is available in a certain concert
   - **Parameters**: 
-    1. concertID as an INT
-    2. row as an INT
-    3. column as a STRING
+    1. concertID: an INT $\ge$ 1
+    2. row: an INT $\ge$ 1
+    3. column: a STRING
     ```
       {
         "concertId": 1
+        "row": 1
+        "column": "A"
       }
     ```
   - **Response body**:
@@ -119,7 +121,7 @@
     ```
         {
             "row": 1,
-            "column": 1,
+            "column": "A",
         }
     ```
     If it doesn't exist, it retrieves null:
@@ -131,11 +133,14 @@
 
 * **POST `/api/create-reservations-entry`**: it creates a reservation in the reservations table
   - **Request body**: 
+    - concertID: an INT $\ge$ 1
+    - userID: an INT $\ge$ 1
+    - seats: an array of seats, where each seat is a 2-character STRING 
     ```
       {
         "concertID": 1,
         "userID": 1, 
-        "seats": [ "1A", "2B" ],
+        "seats": [ "1A", "2B" ]
       }
     ```
   - **Response body**: if all the reservation are inserted successfully:
@@ -148,6 +153,8 @@
 
 * **DELETE `'/api/delete-reservation/:concertId/:userId`**: deletes all the reservations of a user for a specific concert
   - **Request body**: 
+    - concertId: an INT $\ge$ 1
+    - userId: an INT $\ge$ 1
     ```
       {
         "concertId": 1,
@@ -165,7 +172,7 @@
     ```
     { "username": "u1@p.it", "password": "pwd" }
     ```
-  - **Response body**: JSON object with the student's info and, if the user has a study plan, studyPlan; or a description of the errors:   
+  - **Response body**: JSON object with the user's info, with a specific field to identify if its a loyal one:   
     ```
     { 
       "id": 1
@@ -206,8 +213,8 @@
 
 - **GET `/api/compute-discount`**
   - **Parameters**: 
-    1. sum: the sum of the rows in the reservation, as an INT
-    2. loyal: 1 if the customer is loyal, 0 if it's not loyal, as an INT
+    1. sum: the sum of the rows in the reservation, as an INT $\ge$ 0
+    2. loyal: 1 if the customer is loyal, 0 if it's not loyal, as an INT 
     ```
       { 
         "sum": 10,
