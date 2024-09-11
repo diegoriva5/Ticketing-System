@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Form, Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Table, Form, Button, Dropdown, DropdownButton, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 import API from '../API';
@@ -265,10 +265,12 @@ function TheaterSeats(props) {
                 </Button>
               </div>
             </div>
-          ) : ( // Show log-in prompt if user is not logged in
-            <div className="text-center mb-3">
-              <p>Log-in if you want to book some seats!</p>
-            </div>
+          ) : (
+            <Alert variant="info" className="text-center mb-3 custom-alert">
+              <i class="bi bi-exclamation-triangle-fill me-3"></i>
+              Log in if you want to book some seats!
+              <i class="bi bi-exclamation-triangle-fill ms-3"></i>
+            </Alert>
           )}
 
             
