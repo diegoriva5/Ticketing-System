@@ -145,12 +145,7 @@ app.get('/api/reservationOfUser/:userId', isLoggedIn,
     }
     
     reservationsDao.getReservationsByUserID(req.user.id)
-      .then(reservations => {
-        if (reservations.length === 0) {
-          return res.status(204).send(); // Return 204 if the array is empty
-        }
-        res.status(200).json(reservations);
-      })
+      .then(reservations => res.status(200).json(reservations))
       .catch(err => res.status(500).json(err));
   }
 );

@@ -94,69 +94,86 @@ function TheaterSeats(props) {
   // Handle confirmation of tickets
   const handleConfirm = async () => {
     if (ticketCount > 0) {
-      const newSelectedSeats = []; // Temporary array to store the seats to be booked
-      let seatsNeeded = ticketCount; // Number of tickets needed
+      try {
+        // Fetch the latest reservations to ensure we have the most current data
+        const reservations = await API.getReservations(expandedConcertID);
+        setOccupied(reservations);
+        setSelectedSeats([]); // Clear selected seats after updating reservations
 
-      // Iterate over the seat grid to find available seats
-      for (let rowIndex = 1; rowIndex <= theater.rows; rowIndex++) {
-        for (let colIndex = 0; colIndex < theater.columns; colIndex++) {
-          const seatRow = rowIndex;
-          const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
 
-          // If the seat is not occupied and we still need seats, add it to the new selection
-          if (!isSeatOccupied(seatRow, seatColumn) && seatsNeeded > 0) {
-            newSelectedSeats.push({ row: seatRow, column: seatColumn });
-            seatsNeeded--;
+        const newSelectedSeats = []; // Temporary array to store the seats to be booked
+        let seatsNeeded = ticketCount; // Number of tickets needed
+
+        // Iterate over the seat grid to find available seats based on the updated reservations
+        for (let rowIndex = 1; rowIndex <= theater.rows; rowIndex++) {
+          for (let colIndex = 0; colIndex < theater.columns; colIndex++) {
+            const seatRow = rowIndex;
+            const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
+
+            // Check if the seat is occupied based on the most recent data
+            const isCurrentlyOccupied = reservations.some(
+              (seat) => seat.row === seatRow && seat.column === seatColumn
+            );
+
+            // If the seat is not occupied and we still need seats, add it to the new selection
+            if (!isCurrentlyOccupied && seatsNeeded > 0) {
+              newSelectedSeats.push({ row: seatRow, column: seatColumn });
+              seatsNeeded--;
+            }
+
+            // If we've selected enough seats, break out of the loop
+            if (seatsNeeded === 0) break;
           }
-
-          // If we've selected enough seats, break out of the loop
           if (seatsNeeded === 0) break;
         }
-        if (seatsNeeded === 0) break;
-      }
 
-      if (newSelectedSeats.length === ticketCount) {
-        // Update the selected seats state directly
-        setSelectedSeats([...selectedSeats, ...newSelectedSeats]);
+        if (newSelectedSeats.length === ticketCount) {
+          // Update the selected seats state directly
+          setSelectedSeats([...selectedSeats, ...newSelectedSeats]);
 
-        try {
-          const bookingData = {
-            concertID: expandedConcertID, // Use the concert ID from props
-            seats: newSelectedSeats.map(seat => `${seat.row}${seat.column}`),
-            userID: user.id // Use the user ID from props
-          };
+          try {
+            const bookingData = {
+              concertID: expandedConcertID, // Use the concert ID from props
+              seats: newSelectedSeats.map((seat) => `${seat.row}${seat.column}`),
+              userID: user.id, // Use the user ID from props
+            };
 
-          await API.confirmBooking(bookingData);
-          setReloadTrigger(true);   //used to reload the user reservations' list
-          
-          // Fetch updated reservations to refresh the view
-          API.getReservations(expandedConcertID)
-            .then(reservations => {
-              setOccupied(reservations);
-              setSelectedSeats([]); // Clear selected seats
-              setTicketCount(0);
-              alert('Booking successful!');
-            })
-            .catch(e => {
-              console.error(e);
-              setMessage(e.message);
-              setTicketCount(0);
-            });
+            await API.confirmBooking(bookingData);
+            setReloadTrigger(true); // Trigger a reload of the user reservations' list
 
-        } catch (error) {
-          alert('Error. The reason will be displayed in red at the top of the page after pressing OK.');
-          setMessage(error.message);
-          setSelectedSeats([]); // Clear selected seats after failed booking
-          setTicketCount(0);
-          navigate('/'); // Navigate back to the home page after failed confirmation
+            // Fetch updated reservations to refresh the view
+            const updatedReservations = await API.getReservations(expandedConcertID);
+            setOccupied(updatedReservations);
+            setSelectedSeats([]); // Clear selected seats
+            setTicketCount(0);
+            alert("Booking successful!");
+          } catch (error) {
+            alert(
+              "Error. The reason will be displayed in red at the top of the page after pressing OK."
+            );
+            setMessage(error.message);
+            setSelectedSeats([]); // Clear selected seats after failed booking
+            setTicketCount(0);
+            navigate("/"); // Navigate back to the home page after failed confirmation
+          }
+        } else {
+          setMessage("Not enough available seats.");
         }
-      } else {
-        setMessage('Not enough available seats.');
+      } catch (error) {
+        console.error(error);
+        alert(
+          "Error. The reason will be displayed in red at the top of the page after pressing OK."
+        );
+        setMessage(error.message);
+        setSelectedSeats([]); // Clear selected seats after failed booking
+        setTicketCount(0);
+        navigate("/"); // Navigate back to the home page after failed confirmation
       }
     } else {
-      setMessage('Please select the number of tickets.');
+      setMessage("Please select the number of tickets.");
     }
   };
+
 
   
   /* visually-hidden hides the message visually but will be annouced to screen readers */

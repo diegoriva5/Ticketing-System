@@ -199,7 +199,6 @@ function AppWithRouter(props) {
               setExpandedConcertID={setExpandedConcertID}
               message={message} setMessage={setMessage}
               blueSeats={blueSeats} setBlueSeats={setBlueSeats}
-
               reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
             />
           } />
