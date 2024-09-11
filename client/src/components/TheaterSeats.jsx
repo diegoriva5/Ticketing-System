@@ -31,6 +31,7 @@ function TheaterSeats(props) {
 
   const handleBookingClick = () => {
     if(selectedSeats.length > 0){
+      setMessage('');
       navigate('/confirmation'); // Navigate to the confirmation page
     } else {
       alert('No selected seats!');

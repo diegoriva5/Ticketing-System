@@ -105,6 +105,7 @@ function AppWithRouter(props) {
     setUser(null);
     setAuthToken(undefined);
     setExpandedConcertID(null);
+    setMessage('');
     navigate("/");
   };
 

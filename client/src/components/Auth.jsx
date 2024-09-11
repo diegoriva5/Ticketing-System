@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Button, Alert, Col, Row } from 'react-bootstrap';
+import { Form, Button, Alert, Col, Row, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm(props) {
@@ -33,34 +33,48 @@ function LoginForm(props) {
   };
 
   return (
-    <Row>
-      <Col>
-        <h1 className="pb-3">Welcome to the Login Page</h1>
+    <Container className="mt-5 p-4 shadow-lg rounded bg-light" style={{ maxWidth: '500px' }}>
+      <h1 className="text-center mb-4">Welcome Back!</h1>
 
-        <Form onSubmit={handleSubmit}>
-          {errorMessage? <Alert dismissible onClose={() => setErrorMessage('')} variant="danger">{errorMessage}</Alert> : null}
-          <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              value={username} placeholder="Example: john.doe@example.it"
-              onChange={(ev) => setUsername(ev.target.value)}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              value={password} placeholder="Enter your password"
-              onChange={(ev) => setPassword(ev.target.value)}
-            />
-          </Form.Group>
-          <Button className="d-flex float-start" type="submit" variant="primary">Login</Button>
-          <Button className="d-flex float-end" type="submit" variant="danger" onClick={handleBack}>Back to the Home Page</Button>
-        </Form>
-      </Col>
-    </Row>
+      <Form onSubmit={handleSubmit}>
+        {errorMessage ? (
+          <Alert dismissible onClose={() => setErrorMessage('')} variant="danger">
+            {errorMessage}
+          </Alert>
+        ) : null}
 
+        <Form.Group className="mb-3">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            value={username}
+            placeholder="Example: john.doe@example.it"
+            onChange={(ev) => setUsername(ev.target.value)}
+            className="shadow-sm"
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            value={password}
+            placeholder="Enter your password"
+            onChange={(ev) => setPassword(ev.target.value)}
+            className="shadow-sm"
+          />
+        </Form.Group>
+
+        <Row className="mt-4">
+          <Col className="d-flex justify-content-start">
+            <Button type="submit" variant="primary" className="px-4 py-2 shadow">Login</Button>
+          </Col>
+          <Col className="d-flex justify-content-end">
+            <Button variant="danger" className="px-4 py-2 shadow" onClick={handleBack}>Back to Home</Button>
+          </Col>
+        </Row>
+      </Form>
+    </Container>
   )
 };
 

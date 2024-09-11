@@ -151,6 +151,7 @@ function ConfirmationLayout(props) {
       alert('Booking confirmed!');
       setSelectedSeats([]); // Clear selected seats
       setExpandedConcertID(null);
+      setMessage('');
       navigate('/'); // Navigate back to the home page or wherever you want after confirmation
     } catch (error) {
       alert('Error. The cause is displayed on top of the page.');
@@ -190,6 +191,7 @@ function ConfirmationLayout(props) {
   const handleBack = () => {
     setSelectedSeats([]);
     setExpandedConcertID(null);
+    setMessage('');
     navigate('/'); // Navigate back to the home page or wherever you want after confirmation
   };
 
