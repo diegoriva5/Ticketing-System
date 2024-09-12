@@ -74,7 +74,7 @@ function ReservationsTable(props) {
             <Card.Title className="mb-3" style={{ fontSize: "1.75rem", fontWeight: "700", letterSpacing: "1px" }}>🎉 Thanks for booking with us!</Card.Title>
             <div className="mb-4">
               <div style={{ fontWeight: "500", marginBottom: "15px", fontSize: "1.1rem" }}>
-                Check out your discounts next to each reservation!
+                Check out your discounts for the next concert's season!
               </div>
             </div>
           </Card.Body>

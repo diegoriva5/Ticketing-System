@@ -25,6 +25,7 @@ function AppWithRouter(props) {
   const [loggedIn, setLoggedIn] = useState(false);
   // This state contains the user's info.
   const [user, setUser] = useState(null);
+  // This state contains the list of concerts
   const [concertList, setConcertList] = useState([]);
   const [theater, setTheater] = useState(null);
   const [expandedConcertID, setExpandedConcertID] = useState(null);

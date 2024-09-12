@@ -249,9 +249,11 @@
 - `Navigation` (in `Layout.jsx`): handles the navigation bar on top of the page
 
 
-## Screenshot
+## Screenshots
 
-![Screenshot](./img/screenshot.png)
+![Screenshot](./img/Screenshot-Reservations.png)
+![Screenshot](./img/Screenshot-Concert-Seats.png)
+
 
 ## Users Credentials
 

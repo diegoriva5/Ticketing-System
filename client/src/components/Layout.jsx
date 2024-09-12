@@ -1,4 +1,4 @@
-import { Row, Col, Button, Alert, Toast } from 'react-bootstrap';
+import { Row, Col, Button, Alert, Card, ListGroup } from 'react-bootstrap';
 import { Outlet, Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
@@ -199,24 +199,47 @@ function ConfirmationLayout(props) {
     <>
       {loading ? ( // Show loading spinner if loading is true
         <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Processing confirmation...</span>
+          <div className="spinner-border text-dark" role="status">
+            <span className="visually-hidden">Loading confirmation page...</span>
           </div>
+          <div className="mt-2 text-primary text-dark">Loading confirmation page...</div>
         </div>
       ) : (
         <>
-          <h2>Booking Confirmation</h2>
-          <Row>
-            <Col>
-              <p><strong>Name:</strong> {user.name}</p>
-              <p><strong>Concert:</strong> {concertName}</p>
-              <p><strong>Theater:</strong> {theaterName}</p>
-              <p><strong>Selected Seats:</strong> {selectedSeats.map(seat => `${seat.row}${seat.column}`).join(', ')}</p>
-              <Button variant="success" onClick={handleConfirmBooking}>Confirm Booking</Button>
-              <Button variant="danger" onClick={handleBack}>Back</Button>
-            </Col>
-          </Row>
+          <h2 className="text-center mb-5" style={{ color: '#343a40', fontWeight: 'bold' }}>Booking Confirmation</h2>
+          <Card className="p-4 mb-4 shadow-lg rounded" style={{ backgroundColor: '#f8f9fa' }}>
+            <Card.Body>
+              <ListGroup variant="flush">
+                <ListGroup.Item className="d-flex align-items-center" style={{ backgroundColor: '#e9ecef' }}>
+                  <i className="bi bi-person-fill me-2" style={{ color: '#17a2b8' }}></i>
+                  <strong>Name:</strong>&nbsp;{user.name}
+                </ListGroup.Item>
+                <ListGroup.Item className="d-flex align-items-center" style={{ backgroundColor: '#e9ecef' }}>
+                  <i className="bi bi-music-note-beamed me-2" style={{ color: '#ffc107' }}></i>
+                  <strong>Concert:</strong>&nbsp;{concertName}
+                </ListGroup.Item>
+                <ListGroup.Item className="d-flex align-items-center" style={{ backgroundColor: '#e9ecef' }}>
+                  <i className="bi bi-building me-2" style={{ color: '#28a745' }}></i>
+                  <strong>Theater:</strong>&nbsp;{theaterName}
+                </ListGroup.Item>
+                <ListGroup.Item className="d-flex align-items-center" style={{ backgroundColor: '#e9ecef' }}>
+                  <i className="bi bi-ticket-perforated-fill me-2" style={{ color: '#dc3545' }}></i>
+                  <strong>Selected Seats:</strong>&nbsp;{selectedSeats.map(seat => `${seat.row}${seat.column}`).join(', ')}
+                </ListGroup.Item>
+              </ListGroup>
+              <div className="d-flex justify-content-between mt-4">
+                <Button variant="outline-primary" onClick={handleBack} className="px-4 py-2 rounded-pill">
+                  <i className="bi bi-arrow-left-circle me-2"></i>Back
+                </Button>
+                <Button variant="success" onClick={handleConfirmBooking} className="px-4 py-2 rounded-pill">
+                  <i className="bi bi-check-circle me-2"></i>Confirm Booking
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
         </>
+
+
       )}
     </>
   );

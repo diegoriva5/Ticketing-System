@@ -96,7 +96,7 @@ function TheaterSeats(props) {
   const handleConfirm = async () => {
     if (ticketCount > 0) {
       try {
-        // Fetch the latest reservations to ensure we have the most current data
+        // Fetch the latest reservations to ensure we have the current data
         const reservations = await API.getReservations(expandedConcertID);
         setOccupied(reservations);
         setSelectedSeats([]); // Clear selected seats after updating reservations
@@ -182,12 +182,11 @@ function TheaterSeats(props) {
     <div className="theater-seats">
       {loading ? (
         <div className="d-flex flex-column align-items-center">
-          <div className="spinner-border text-white" role="status">
+          <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden text-white">Loading seats...</span>
           </div>
-          <div className="mt-2 text-primary text-white">Loading seats...</div>
+          <div className="mt-2 text-primary text-primary">Loading seats...</div>
         </div>
-      
       ) : (
         <>
           <div className="stage">Stage</div>
