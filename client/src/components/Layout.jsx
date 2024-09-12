@@ -43,7 +43,7 @@ function TableLayout(props) {
   if (location.state)
     reloadFromServer = location.state.reloadFromServer;  
   
-
+  // Reload the concerts and the reservation of the user when the reloadTrigger is set to true
   useEffect(() => {
     if (reloadFromServer) {
       API.getConcerts()
@@ -69,7 +69,7 @@ function TableLayout(props) {
   }, [reloadFromServer, props.reloadTrigger]);
 
   
-  
+  // I want to have the reservations table and then the concerts table
   return (      // mt-5 lo mette più in basso
     <>
       <div className="text-center mt-5">
@@ -94,10 +94,9 @@ function TableLayout(props) {
         )}
       </div>
       
-      
       <div className="flex-row justify-content-between mt-2 concerts-heading">
         <h1 className='my-3 mt-0'>Next concerts</h1>
-      
+
         <ConcertsTable 
           concerts={props.concertList} loggedIn={props.loggedIn}
           expandedConcertID={props.expandedConcertID} setExpandedConcertID={props.setExpandedConcertID}
@@ -119,8 +118,7 @@ function TableLayout(props) {
 function ConfirmationLayout(props) {
   const { user, concertName, theaterName, selectedSeats, 
     setSelectedSeats, occupied, setOccupied, expandedConcertID, setExpandedConcertID,
-    message, setMessage, reloadTrigger, setReloadTrigger,
-    blueSeats, setBlueSeats } = props;
+    message, setMessage, blueSeats, setBlueSeats } = props;
 
   const navigate = useNavigate(); 
   const [loading, setLoading] = useState(true);
@@ -161,7 +159,6 @@ function ConfirmationLayout(props) {
       
       // Extract the rows and columns of unavailable seats
       const blueSeats = unavailableSeats.map(seat => `${seat.row}${seat.column}`);
-      
   
       // Update state to display blue seats
       setBlueSeats(blueSeats);

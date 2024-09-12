@@ -4,7 +4,7 @@ import './App.css';
 
 import { React, useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Toast } from 'react-bootstrap';
-import { BrowserRouter, Routes, Route, Outlet, Link, useParams, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 
 import { GenericLayout, NotFoundLayout, LoginLayout, TableLayout, ConfirmationLayout } from './components/Layout';
 import API from './API.js';
@@ -27,15 +27,22 @@ function AppWithRouter(props) {
   const [user, setUser] = useState(null);
   // This state contains the list of concerts
   const [concertList, setConcertList] = useState([]);
+  // This state contains the current theater info
   const [theater, setTheater] = useState(null);
+  // This state contains the concertID of the concert which "Show seats" is clicked
   const [expandedConcertID, setExpandedConcertID] = useState(null);
+  // This state contains the occupied seats of a specific concert (shown in red)
   const [occupied, setOccupied] = useState([]);
+  // This state contains the conflictual seats (multi-user) that are shown for 5 seconds in blue
   const [blueSeats, setBlueSeats] = useState([]);
+  // This state contains the selected seats
   const [selectedSeats, setSelectedSeats] = useState([]);
+  // This state contains the reservation list of a specific user
   const [reservationList, setReservationList] = useState([]);
   
-
+  // This state is used to reload some useEffect 
   const [reloadTrigger, setReloadTrigger] = useState(true); 
+  // This state contains error messages that needs to be displayed
   const [message, setMessage] = useState('');
   const [dirty, setDirty] = useState(true);
 
@@ -76,20 +83,25 @@ function AppWithRouter(props) {
         API.getAuthToken().then((resp) => { setAuthToken(resp.token); })
       } catch(err) {
         // NO need to do anything: user is simply not yet authenticated
-        //handleError(err);
+        // handleErrors(err);   ->  If you want to display the "Not authenticated" error message, 
+        //                          even at the first loading of the page
       }
     };
     checkAuth();
 
   }, []);  // The useEffect callback is called only the first time the component is mounted.
 
+
+  /**
+   * This function handles the login process.
+   */ 
   const handleLogin = async (credentials) => {
     try {
       const user = await API.logIn(credentials);
       setUser(user);
       setLoggedIn(true);
       renewToken();
-      setExpandedConcertID(null);
+      setExpandedConcertID(null);   // After the login, the page is displayed without any seat map
     } catch (err) {
       // error is handled and visualized in the login form, do not manage error, throw it
       throw err;
@@ -105,7 +117,7 @@ function AppWithRouter(props) {
     // clean up everything
     setUser(null);
     setAuthToken(undefined);
-    setExpandedConcertID(null);
+    setExpandedConcertID(null);   // After the logout, the page is displayed without any seat map
     setMessage('');
     navigate("/");
   };
@@ -118,12 +130,15 @@ function AppWithRouter(props) {
     it updates expandedConcertID to the clicked concertID to show the map.
   */
   const handleToggleSeats = async (concertID, theaterID) => {
-    setExpandedConcertID(prevId => prevId === concertID ? null : concertID);
-    if(expandedConcertID === concertID){
+    setExpandedConcertID(prevId => prevId === concertID ? null : concertID);   // This set is updated asynchronously, so the expandedConcertID will be still null when a seat map is opened
+    if(expandedConcertID === concertID){  // So, if the state is still null it means that the button was clicked for the first time, and when expandedConcertID has a number it means that the seat map 
+                                          // was already open and it needs to be collapsed
+      // Collapse the map
       setTheater(null);
       setOccupied([]);
       setSelectedSeats([]);
-    } else {
+    } else {    
+      // Get info about the concertID
       try {
         const theaterInfo = await API.getTheaterInfo(theaterID);
         setTheater(theaterInfo);
@@ -138,13 +153,17 @@ function AppWithRouter(props) {
 
   // Handle seat click for selecting/unselecting
   const handleSeatClick = (row, column) => {
+    // It checks if the seat is occupied using the some method, which tests whether at least one element in the array passes the test
     const isOccupied = occupied.some(seat => seat.row === row && seat.column === column);
 
     if (isOccupied) {
       return; // Do nothing if the seat is occupied
     }
 
+    // If the seat (row, column) passed as a parameter is not occupied, it creates a seat
     const seat = { row, column };
+
+    // Now checks if the seat is already selected (yellow)
     const isSelected = selectedSeats.some(s => s.row === row && s.column === column);
 
     if (isSelected) {
@@ -158,7 +177,7 @@ function AppWithRouter(props) {
 
   const handleDeleteReservation = async (concertID, userID) => {
     try {
-      await API.deleteReservationByID(concertID, userID);
+      await API.deleteReservationByID(concertID, userID); // A user can only have one reservation per concert, so every reservation of that concert coming from that user is deleted
       // Remove the reservation with the specified ID from the reservations array
       setReservationList(prevReservations => prevReservations.filter(reservation => reservation.concert_id !== concertID));
     } catch (err) {
@@ -201,7 +220,6 @@ function AppWithRouter(props) {
               setExpandedConcertID={setExpandedConcertID}
               message={message} setMessage={setMessage}
               blueSeats={blueSeats} setBlueSeats={setBlueSeats}
-              reloadTrigger={reloadTrigger} setReloadTrigger={setReloadTrigger}
             />
           } />
           <Route path="*" element={<NotFoundLayout />} />

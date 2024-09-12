@@ -32,7 +32,7 @@ function ReservationsTable(props) {
   const groupedReservationsArray = Object.values(groupedReservations);
 
 
-
+  // If the user has some reservations, display them
   return (
     <>
       {reservations.length > 0 ? (

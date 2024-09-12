@@ -14,7 +14,7 @@ function TheaterSeats(props) {
     setExpandedConcertID, reloadTrigger, setReloadTrigger,
     message, setMessage, blueSeats, setBlueSeats } = props;
   const [loading, setLoading] = useState(true);
-  const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book
+  const [ticketCount, setTicketCount] = useState(0); // State to track number of ticket I want to book (automatically)
   
 
   // Simulate loading delay
@@ -29,8 +29,9 @@ function TheaterSeats(props) {
     simulateLoading();
   }
 
+  // Function that handles the manual selection button
   const handleBookingClick = () => {
-    if(selectedSeats.length > 0){
+    if(selectedSeats.length > 0){ // If the user selected one or more seats
       setMessage('');
       navigate('/confirmation'); // Navigate to the confirmation page
     } else {
@@ -58,9 +59,11 @@ function TheaterSeats(props) {
       {Array.from({ length: theater.columns }, (_, colIndex) => {
         const seatRow = rowIndex + 1;
         const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
+        // Checks the single seat state (occupied, selected, blue)
         const isOccupied = isSeatOccupied(seatRow, seatColumn);
         const isSelected = isSeatSelected(seatRow, seatColumn);
         const isBlue = isSeatBlue(seatRow, seatColumn);
+        // Adjust the color of the seat
         const seatClass = isBlue 
           ? 'seat blue' 
           : isOccupied 
@@ -75,8 +78,8 @@ function TheaterSeats(props) {
             className={seatClass}
             onClick={() => onSeatClick(seatRow, seatColumn)} // Use the passed down click handler
           >
-            {`${seatRow}${seatColumn}`}
-          </div>
+            {`${seatRow}${seatColumn}`} 
+          </div>    // {`${seatRow}${seatColumn}`} displays the single seat name
         );
       })}
     </div>
@@ -85,18 +88,16 @@ function TheaterSeats(props) {
   const availableSeats = theater.seats - occupied.length;
 
   const handleSelectTickets = (count) => {
-    if(loggedIn){
-      setTicketCount(count); // Update the state with the selected number of tickets
-      setSelectedSeats([]);
-    }
+    setTicketCount(count); // Update the state with the selected number of tickets
+    setSelectedSeats([]); // If the user selected some seats, remove them from the selected
+                          // seats 
   };
 
-
-  // Handle confirmation of tickets
+  // Handle automatic selection of tickets
   const handleConfirm = async () => {
     if (ticketCount > 0) {
       try {
-        // Fetch the latest reservations to ensure we have the current data
+        // Fetch the latest reservations to ensure we have the current data (multi-user)
         const reservations = await API.getReservations(expandedConcertID);
         setOccupied(reservations);
         setSelectedSeats([]); // Clear selected seats after updating reservations
@@ -105,13 +106,13 @@ function TheaterSeats(props) {
         const newSelectedSeats = []; // Temporary array to store the seats to be booked
         let seatsNeeded = ticketCount; // Number of tickets needed
 
-        // Iterate over the seat grid to find available seats based on the updated reservations
+        // Iterate over the seat map to find available seats based on the updated reservations
         for (let rowIndex = 1; rowIndex <= theater.rows; rowIndex++) {
           for (let colIndex = 0; colIndex < theater.columns; colIndex++) {
             const seatRow = rowIndex;
             const seatColumn = String.fromCharCode(65 + colIndex); // Convert column index to letter (A, B, C, etc.)
 
-            // Check if the seat is occupied based on the most recent data
+            // Check if the seat is occupied
             const isCurrentlyOccupied = reservations.some(
               (seat) => seat.row === seatRow && seat.column === seatColumn
             );
@@ -147,6 +148,7 @@ function TheaterSeats(props) {
             setOccupied(updatedReservations);
             setSelectedSeats([]); // Clear selected seats
             setTicketCount(0);
+            setMessage('');
             alert("Booking successful!");
           } catch (error) {
             alert(
@@ -171,7 +173,7 @@ function TheaterSeats(props) {
         navigate("/"); // Navigate back to the home page after failed confirmation
       }
     } else {
-      setMessage("Please select the number of tickets.");
+      alert("Please select the number of tickets.");
     }
   };
 
@@ -266,9 +268,9 @@ function TheaterSeats(props) {
             </div>
           ) : (
             <Alert variant="info" className="text-center mb-3 custom-alert">
-              <i class="bi bi-exclamation-triangle-fill me-3"></i>
+              <i className="bi bi-exclamation-triangle-fill me-3"></i>
               Log in if you want to book some seats!
-              <i class="bi bi-exclamation-triangle-fill ms-3"></i>
+              <i className="bi bi-exclamation-triangle-fill ms-3"></i>
             </Alert>
           )}
 

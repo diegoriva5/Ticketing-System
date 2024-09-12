@@ -176,7 +176,7 @@ exports.isSeatAvailable = (concertID, row, column) => {
             if (row != undefined) {
                 resolve(row);
             } else {
-                // All seats are available
+                // Seat is available
                 resolve(null);
             }
         });

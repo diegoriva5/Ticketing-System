@@ -65,6 +65,7 @@ function ConcertRow(props) {
 
   const toggleSeats = () => {   // Used to expand or collapse the 2D seat map
         onToggleSeats(concertData.id, concertData.theater_id);
+        setMessage('');
         // Selects which row (controlled by the concert.id) needs to be expanded
   };
   

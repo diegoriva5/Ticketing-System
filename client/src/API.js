@@ -129,7 +129,7 @@ const confirmBooking = async (bookingData) => {
 }
 
 
-/* API to delete a reseravation */
+/* API to delete a reservation */
 const deleteReservationByID = async(concertID, userID) => {
   return getJson(
     fetch(SERVER_URL + "delete-reservation/" + concertID + "/" + userID, {
@@ -140,21 +140,29 @@ const deleteReservationByID = async(concertID, userID) => {
 }
 
 const checkSeatIsAvailable = async(concertID, selectedSeats) => {
+  // It generates a list of URLs for checking seat availability by mapping over the selectedSeats array.
   const urls = selectedSeats.map(seat => {
+    // The URLs point to a server endpoint (${SERVER_URL}is-seat-available/...) that will return whether each specific seat is available or not.
     return `${SERVER_URL}is-seat-available/${concertID}/${seat.row}/${seat.column}`;
   });
 
   try {
+    // Do the requests in parallel
     const responses = await Promise.all(urls.map(url => fetch(url, { credentials: 'include' })));
 
     responses.forEach((res, index) => {
+      // If one request fails it gives an error
       if (!res.ok) {
         console.error(`Request ${index} failed with status: ${res.status}`);
       }
     });
 
+    // Now all the results are translated in a JSON format
     const occupiedSeatsResults = await Promise.all(responses.map(res => res.json()));
 
+    // Now filter out all the null to get only the occupied seats from the selected seats
+    // null is the response if the seat is not occupied, if it is occupied it returns
+    // the row and the column of the seat (is-seat-available logic)
     const occupiedSeats = occupiedSeatsResults.filter(result => result != null);
 
     return occupiedSeats;
@@ -167,7 +175,7 @@ const checkSeatIsAvailable = async(concertID, selectedSeats) => {
 
 /* Server2 APIs */
 async function getDiscount(authToken, sum, loyal) {
-  // retrieve info from an external server, where info can be accessible only via JWT token
+  // Retrieve info from an external server, where info can be accessible only via JWT token
   return getJson(fetch('http://localhost:3002/api/' + 'compute-discount', {
     method: 'POST',
     headers: {
