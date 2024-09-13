@@ -161,6 +161,9 @@ function TheaterSeats(props) {
             navigate("/"); // Navigate back to the home page after failed confirmation
           }
         } else {
+          alert(
+            "Error. The reason will be displayed in red at the top of the page after pressing OK."
+          );
           setMessage("Not enough available seats.");
         }
       } catch (error) {
