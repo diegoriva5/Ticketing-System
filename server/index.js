@@ -61,7 +61,7 @@ passport.deserializeUser(function (user, callback) { // this user is id + email 
 const session = require('express-session');
 
 app.use(session({
-  secret: "shhhhh... it's a secret! - change it for the exam!",
+  secret: "shhhhh... it's a terces! - change it for the exam!",
   resave: false,
   saveUninitialized: false,
   cookie: { httpOnly: true, secure: app.get('env') === 'production' ? true : false },

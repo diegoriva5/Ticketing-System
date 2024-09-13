@@ -107,14 +107,14 @@ function ReservationRow(props) {
     return 0; // Return 0 if authToken or seats is invalid
   };
 
-  // Use useEffect to calculate the discount once when the component mounts or when seats change
+  // Use useEffect to calculate the discount
   useEffect(() => {
     calculateDiscount().then(dis => setDiscount(dis));
-  }, [authToken]); // Depend on seats to re-calculate if seats change
+  }, [authToken]); // Depend on authtoken, so I try to compute it less times
 
   const handleDeleteClick = () => {
     onDeleteReservation(concertID, user.id);
-    setExpandedConcertID(null);
+    setExpandedConcertID(null);   // when a reservation is deleted, close the seat maps
   };
  
   return (

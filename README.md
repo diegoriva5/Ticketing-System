@@ -1,5 +1,5 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/XYY1fduM)
-# Exam #1234: "Exam Title"
+# Exam #3: "Concert Seats"
 ## Student: s322694 RIVA DIEGO
 
 ## React Client Application Routes
@@ -83,7 +83,7 @@
 
 * **GET `/api/reservationOfUser/:userId`**: retrieves all the reservations of a certain user, given its id
   - **Parameters**: 
-    1. userId as an INT
+    1. userId as an INT $\ge$ 1
     ```
       {
         "userId": 1
@@ -196,7 +196,7 @@
   - Codes: `200 OK`, `401 Unauthorized`.
 
 * **DELETE `/api/sessions/current`**: Logout the user.
-  - Codes: `200 OK`, `401 Unauthorized`.
+  - Codes: `200 OK`.
 
 ### Token APIs
 

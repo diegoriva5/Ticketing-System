@@ -159,8 +159,6 @@ exports.createReservations = async (concertID, seats, userID) => {
 // Check if all seats are available
 exports.isSeatAvailable = (concertID, row, column) => {
     return new Promise((resolve, reject) => {
-        // Parse seat strings to row and column format
-        
         
         // SQL query to check if any of the given seats are already reserved
         const sql = "SELECT row, column FROM reservations WHERE concert_id = ? AND row = ? AND column = ?";
@@ -174,6 +172,7 @@ exports.isSeatAvailable = (concertID, row, column) => {
             }
 
             if (row != undefined) {
+                // If it finds the seat, so it is already reserved, return row and column
                 resolve(row);
             } else {
                 // Seat is available

@@ -132,7 +132,8 @@ function TheaterSeats(props) {
         if (newSelectedSeats.length === ticketCount) {
           // Update the selected seats state directly
           setSelectedSeats([...selectedSeats, ...newSelectedSeats]);
-
+          
+          // Build the object to send the request to the server
           try {
             const bookingData = {
               concertID: expandedConcertID, // Use the concert ID from props
@@ -143,7 +144,7 @@ function TheaterSeats(props) {
             await API.confirmBooking(bookingData);
             setReloadTrigger(true); // Trigger a reload of the user reservations' list
 
-            // Fetch updated reservations to refresh the view
+            // Fetch updated reservations to refresh the view and make reserved seats red
             const updatedReservations = await API.getReservations(expandedConcertID);
             setOccupied(updatedReservations);
             setSelectedSeats([]); // Clear selected seats

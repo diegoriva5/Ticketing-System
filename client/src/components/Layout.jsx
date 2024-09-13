@@ -136,22 +136,25 @@ function ConfirmationLayout(props) {
     simulateLoading();
   }
 
+  // Triggered by the button in the confirmation layout to send the request to the server
   const handleConfirmBooking = async () => {
     try {
+      // Build the object to send the request to the server
       const bookingData = {
         concertID: expandedConcertID,
         seats: selectedSeats.map(seat => `${seat.row}${seat.column}`),
         userID: user.id
       };
   
-      await API.confirmBooking(bookingData);
+      await API.confirmBooking(bookingData);  // it calls the create-reservation-entry
     
       alert('Booking confirmed!');
-      setSelectedSeats([]); // Clear selected seats
-      setExpandedConcertID(null);
+      setSelectedSeats([]); // Clear selected seats when the booking is confirmed
+      setExpandedConcertID(null); // Close the seat map
       setMessage('');
-      navigate('/'); // Navigate back to the home page or wherever you want after confirmation
+      navigate('/'); // Navigate back to the home page after confirmation
     } catch (error) {
+      // confirmBooking failed
       alert('Error. The cause is displayed on top of the page.');
   
       // Fetch unavailable seats to determine which ones need to be displayed in blue

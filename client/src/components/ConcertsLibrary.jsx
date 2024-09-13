@@ -75,9 +75,6 @@ function ConcertRow(props) {
     - The theater name
     - A button to book seats.
     
-    If the user is logged in, clicking the button toggles the visibility of the 2D seat map.
-    If the user is not logged in, clicking the button redirects to the login page.
-    
     The map visibility is controlled by the isExpanded state, which determines if the map
     is shown underneath the row.
   */

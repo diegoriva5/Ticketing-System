@@ -82,6 +82,8 @@ app.post('/api/compute-discount',
     } else {
       res.status(200).json({ discount: finalValue });
     }
+    
+    
 });
 
 
