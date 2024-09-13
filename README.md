@@ -1,5 +1,5 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/XYY1fduM)
-# Exam #3: "Concert Seats"
+# Exam #3: "Concert seats"
 ## Student: s322694 RIVA DIEGO
 
 ## React Client Application Routes
@@ -102,7 +102,7 @@
         ...
     ]
     ```
-  - Codes: `200 OK`, `204 No Content`, `422 Unprocessable Content`, `500 Internal Server Error`
+  - Codes: `200 OK`, `204 No Content`, `401 Unauthorized`, `422 Unprocessable Content`, `500 Internal Server Error`
 
 * **GET `/api/is-seat-available/:concertID/:row/:column`**: checks if a specific seat is available in a certain concert
   - **Parameters**: 
@@ -149,7 +149,7 @@
             true
         }
     ```
-  - Codes: `201 Created`, `422 Unprocessable Content`, `406 Not Acceptable`, `409 Conflict`, `500 Internal Server Error`
+  - Codes: `201 Created`, `422 Unprocessable Content`, `401 Unauthorized`, `406 Not Acceptable`, `409 Conflict`, `500 Internal Server Error`
 
 * **DELETE `'/api/delete-reservation/:concertId/:userId`**: deletes all the reservations of a user for a specific concert
   - **Request body**: 

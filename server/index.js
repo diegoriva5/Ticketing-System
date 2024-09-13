@@ -143,6 +143,9 @@ app.get('/api/reservationOfUser/:userId', isLoggedIn,
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
     }
+    if(req.params.userId != req.user.id){
+      return res.status(401).json("UserID error: you're not authorized.");
+    }
     
     reservationsDao.getReservationsByUserID(req.user.id)
       .then(reservations => res.status(200).json(reservations))
@@ -183,6 +186,9 @@ app.post('/api/create-reservations-entry', isLoggedIn,
       return res.status(422).json({ errors: errors.array() });
     }
     const { concertID, seats, userID } = req.body;
+    if(userID != req.user.id){
+      return res.status(401).json("UserID error: you're not authorized.");
+    }
     reservationsDao.createReservations(concertID, seats, req.user.id)
       .then(result => res.status(201).json(result))
       .catch(err => { 
@@ -210,6 +216,9 @@ app.delete('/api/delete-reservation/:concertId/:userId', isLoggedIn,
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });
+    }
+    if(req.params.userId != req.user.id){
+      return res.status(401).json("UserID error: you're not authorized.");
     }
     reservationsDao.deleteReservation(req.params.concertId, req.user.id)
       .then(result => res.status(200).json(result))
