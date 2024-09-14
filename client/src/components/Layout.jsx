@@ -37,36 +37,30 @@ function LoginLayout(props) {
 function TableLayout(props) {
   // reloadTrigger: used to reload the list of the reservation of the user 
   // when the automatic booking is performed
-  const location = useLocation();
   
-  let reloadFromServer = true;
-  if (location.state)
-    reloadFromServer = location.state.reloadFromServer;  
-  
-  // Reload the concerts and the reservation of the user when the reloadTrigger is set to true
+  // Reload the concerts and the reservation of the user when the reloadTrigger is set to true (when click on confirm automatic booking)
   useEffect(() => {
-    if (reloadFromServer) {
-      API.getConcerts()
-        .then(concerts => {
-          props.setConcertList(concerts);
-        })
-        .catch(e => { 
-          console.log(e); 
-        }); 
+    API.getConcerts()
+      .then(concerts => {
+        props.setConcertList(concerts);
+      })
+      .catch(e => { 
+        console.log(e); 
+      }); 
 
-      if(props.loggedIn){
-        API.getReservationsOfUser(props.user.id)
-        .then(reservations => {
-          props.setReservationList(reservations);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-      }
-
-      props.setReloadTrigger(false);
+    if(props.loggedIn){
+      API.getReservationsOfUser(props.user.id)
+      .then(reservations => {
+        props.setReservationList(reservations);
+      })
+      .catch(e => {
+        console.log(e);
+      });
     }
-  }, [reloadFromServer, props.reloadTrigger]);
+
+    props.setReloadTrigger(false);
+    
+  }, [props.reloadTrigger]);
 
   
   // I want to have the reservations table and then the concerts table
@@ -148,15 +142,13 @@ function ConfirmationLayout(props) {
   
       await API.confirmBooking(bookingData);  // it calls the create-reservation-entry
     
-      alert('Booking confirmed!');
       setSelectedSeats([]); // Clear selected seats when the booking is confirmed
       setExpandedConcertID(null); // Close the seat map
       setMessage('');
       navigate('/'); // Navigate back to the home page after confirmation
     } catch (error) {
       // confirmBooking failed
-      alert('Error. The cause is displayed on top of the page.');
-  
+
       // Fetch unavailable seats to determine which ones need to be displayed in blue
       const unavailableSeats = await API.checkSeatIsAvailable(expandedConcertID, selectedSeats);
       
@@ -165,6 +157,12 @@ function ConfirmationLayout(props) {
   
       // Update state to display blue seats
       setBlueSeats(blueSeats);
+      if(blueSeats.length > 0){
+        setTimeout(() => {
+          window.scrollTo({ top: 700, behavior: 'smooth' }); // Scroll to top after 1 second
+        }, 500);
+      }
+      
   
       // Clear blueSeats state after 5 seconds
       setTimeout(() => {

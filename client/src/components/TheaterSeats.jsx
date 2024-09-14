@@ -21,7 +21,7 @@ function TheaterSeats(props) {
   const simulateLoading = () => {
     setTimeout(() => {
       setLoading(false); // Update state to hide the loading message
-    }, 2000); // 1-second delay
+    }, 2000); // 2-second delay
   };
 
   // Call simulateLoading immediately to start the timer
@@ -35,7 +35,10 @@ function TheaterSeats(props) {
       setMessage('');
       navigate('/confirmation'); // Navigate to the confirmation page
     } else {
-      alert('No selected seats!');
+      setMessage('No selected seats!');
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+      }, 500);
     }
     
   };
@@ -150,34 +153,35 @@ function TheaterSeats(props) {
             setSelectedSeats([]); // Clear selected seats
             setTicketCount(0);
             setMessage('');
-            alert("Booking successful!");
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+            }, 500);
           } catch (error) {
-            alert(
-              "Error. The reason will be displayed in red at the top of the page after pressing OK."
-            );
             setMessage(error.message);
             setSelectedSeats([]); // Clear selected seats after failed booking
             setTicketCount(0);
-            navigate("/"); // Navigate back to the home page after failed confirmation
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+            }, 500);
           }
         } else {
-          alert(
-            "Error. The reason will be displayed in red at the top of the page after pressing OK."
-          );
           setMessage("Not enough available seats.");
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+          }, 500);
         }
       } catch (error) {
         console.error(error);
-        alert(
-          "Error. The reason will be displayed in red at the top of the page after pressing OK."
-        );
         setMessage(error.message);
         setSelectedSeats([]); // Clear selected seats after failed booking
         setTicketCount(0);
         navigate("/"); // Navigate back to the home page after failed confirmation
       }
     } else {
-      alert("Please select the number of tickets.");
+      setMessage("Please select the number of tickets.");
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+      }, 500);
     }
   };
 
