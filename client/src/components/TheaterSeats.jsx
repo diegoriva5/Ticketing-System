@@ -169,6 +169,9 @@ function TheaterSeats(props) {
           setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
           }, 500);
+          setTimeout(() => {
+            window.scrollTo({ top: 700, behavior: 'smooth' }); // Scroll to top after 1 second
+          }, 2000);
         }
       } catch (error) {
         console.error(error);

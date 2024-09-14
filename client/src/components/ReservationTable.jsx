@@ -110,7 +110,7 @@ function ReservationRow(props) {
   // Use useEffect to calculate the discount
   useEffect(() => {
     calculateDiscount().then(dis => setDiscount(dis));
-  }, [authToken]); // Depend on authtoken, so I try to compute it less times
+  }, [authToken]); // Depends on authtoken, so I try to compute it less times
 
   const handleDeleteClick = () => {
     onDeleteReservation(concertID, user.id);
