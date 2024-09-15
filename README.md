@@ -240,10 +240,10 @@
 ## Main React Components
 
 - `AppWithRouter` (in `App.jsx`): technically a component, takes the role of App and is rendered inside a Router to be able to use the useNavigate hook. This maintains most of the state of the app.
-- `GenericLayout` (in `App.jsx`): it is the page where all the other components are.
-- `TableLayout` (in `App.jsx`): it renders the concert list and the user's reservation list
-- `ReservationTable` (in `Layout.jsx`): the user's reservation table inside the `TableLayout`
-- `ConcertsTable` (in `Layout.jsx`): the concert table inside the `TableLayout`
+- `GenericLayout` (in `App.jsx`): it is the component where all the other components are.
+- `TableLayout` (in `App.jsx`): it is responsible for rendering the concert list and the user's reservation list
+- `ReservationTable` (in `Layout.jsx`): it handles the user's reservation table inside the `TableLayout`
+- `ConcertsTable` (in `Layout.jsx`): it handles the concert table inside the `TableLayout`
 - `LoginLayout` (in `App.jsx`): responsible for handling the login page
 - `ConfirmationLayout` (in `App.jsx`): responsible for handling the confirmation page, when the user chooses his seats by clicking on them.
 - `Navigation` (in `Layout.jsx`): handles the navigation bar on top of the page
