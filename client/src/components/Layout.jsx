@@ -45,7 +45,7 @@ function TableLayout(props) {
         props.setConcertList(concerts);
       })
       .catch(e => { 
-        console.log(e); 
+        props.setMessage('Cannot communicate with server!');
       }); 
 
     if(props.loggedIn){
@@ -54,7 +54,7 @@ function TableLayout(props) {
         props.setReservationList(reservations);
       })
       .catch(e => {
-        console.log(e);
+        props.setMessage('Cannot communicate with server!');
       });
     }
 
@@ -159,8 +159,8 @@ function ConfirmationLayout(props) {
       setBlueSeats(blueSeats);
       if(blueSeats.length > 0){
         setTimeout(() => {
-          window.scrollTo({ top: 700, behavior: 'smooth' }); // Scroll to top after 1 second
-        }, 500);
+          window.scrollTo({ top: 700, behavior: 'smooth' }); // Scroll to seats after 1.5 second
+        }, 1500);
       }
       
   

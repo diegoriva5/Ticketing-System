@@ -154,24 +154,21 @@ function TheaterSeats(props) {
             setTicketCount(0);
             setMessage('');
             setTimeout(() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+              window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 0.5 second
             }, 500);
           } catch (error) {
             setMessage(error.message);
             setSelectedSeats([]); // Clear selected seats after failed booking
             setTicketCount(0);
             setTimeout(() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+              window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 0.5 second
             }, 500);
           }
         } else {
           setMessage("Not enough available seats.");
           setTimeout(() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 0.5 second
           }, 500);
-          setTimeout(() => {
-            window.scrollTo({ top: 700, behavior: 'smooth' }); // Scroll to top after 1 second
-          }, 2000);
         }
       } catch (error) {
         console.error(error);
@@ -183,7 +180,7 @@ function TheaterSeats(props) {
     } else {
       setMessage("Please select the number of tickets.");
       setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 1 second
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top after 0.5 second
       }, 500);
     }
   };
@@ -280,7 +277,7 @@ function TheaterSeats(props) {
           ) : (
             <Alert variant="info" className="text-center mb-3 custom-alert">
               <i className="bi bi-exclamation-triangle-fill me-3"></i>
-              Log in if you want to book some seats!
+              Log in (top-right button) if you want to book some seats!
               <i className="bi bi-exclamation-triangle-fill ms-3"></i>
             </Alert>
           )}
